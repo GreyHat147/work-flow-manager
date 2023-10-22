@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "165040771611",
+    "project_id": "work-flow-manager-71651",
+    "storage_bucket": "work-flow-manager-71651.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165040771611:android:b0f05c33345b96a3359ebe",
+        "android_client_info": {
+          "package_name": "com.example.work_flow_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165040771611-e75jtkcuo4varjf7cft580v32ssq4555.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEHS9Z-topppxZjEIEdOgZtJTz6Urj3Lo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165040771611-e75jtkcuo4varjf7cft580v32ssq4555.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
