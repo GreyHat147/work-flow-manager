@@ -38,11 +38,14 @@ class LoginView extends StatelessWidget {
                   CustomTextField(
                     labelText: 'Correo electrónico',
                     controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 40),
                   CustomTextField(
                     labelText: 'Contraseña',
                     controller: passwordController,
+                    keyboardType: TextInputType.text,
+                    obscureText: true,
                   ),
                   const SizedBox(height: 70),
                   ElevatedButton(
