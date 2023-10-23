@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:work_flow_manager/app_theme.dart';
+import 'package:work_flow_manager/view/project/create_project_view.dart';
 import 'package:work_flow_manager/view/view.dart';
 import 'firebase_options.dart';
 
@@ -29,7 +30,7 @@ class WorkFlowManagerApp extends StatelessWidget {
         textTheme: AppTheme.textTheme,
         platform: TargetPlatform.iOS,
       ),
-      home: LoginView(),
+      home: CreateProjectView(),
     );
   }
 }

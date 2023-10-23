@@ -8,12 +8,16 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     required this.keyboardType,
     this.obscureText = false,
+    this.prefixIcon,
+    this.enabled = true,
   });
 
   final String labelText;
   final TextEditingController controller;
   final TextInputType keyboardType;
   final bool obscureText;
+  final Icon? prefixIcon;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +25,8 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       decoration: InputDecoration(
+        enabled: enabled,
+        prefixIcon: prefixIcon,
         labelText: labelText,
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
