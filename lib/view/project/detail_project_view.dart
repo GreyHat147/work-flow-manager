@@ -10,6 +10,13 @@ List<String> members = [
   'Sam Perez',
 ];
 
+List<String> tasks = [
+  'Crear base de datos',
+  'Crear API',
+  'Crear UI',
+  'Crear',
+];
+
 class WorkedHoursData {
   WorkedHoursData(this.month, this.hours);
 
@@ -141,6 +148,52 @@ class _DetailProjectViewState extends State<DetailProjectView>
               ),
               const SizedBox(height: 30),
               const Text(
+                "Tareas",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...tasks
+                          .map(
+                            (e) => Column(
+                              children: [
+                                ListTile(
+                                  contentPadding:
+                                      const EdgeInsets.symmetric(vertical: 2),
+                                  title: Text(e),
+                                  subtitle: const Text('Juan Perez'),
+                                  trailing: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                  leading: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.task),
+                                  ),
+                                ),
+                                const Divider(height: 2),
+                              ],
+                            ),
+                          )
+                          .toList(),
+                      const SizedBox(height: 30),
+                      CustomButton(
+                        child: const Text("Crear Tarea"),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              const Text(
                 "Rendiemiento General",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
@@ -160,18 +213,6 @@ class _DetailProjectViewState extends State<DetailProjectView>
                             workedHoursData.hours,
                       )
                     ],
-                    //Enable the trackball
-                    /*  trackball: const SparkChartTrackball(
-                        activationMode: SparkChartActivationMode.tap),
-                    //Enable marker
-                    marker: const SparkChartMarker(
-                        displayMode: SparkChartMarkerDisplayMode.all),
-                    //Enable data label
-                    labelDisplayMode: SparkChartLabelDisplayMode.first,
-
-                    xValueMapper: (int index) => data[index].month,
-                    yValueMapper: (int index) => data[index].hours,
-                    dataCount: data.length, */
                   ),
                 ),
               )
