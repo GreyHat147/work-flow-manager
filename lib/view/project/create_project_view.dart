@@ -7,13 +7,6 @@ List<String> proyectTypes = [
   'Mantenimiento',
 ];
 
-/* List<Map<String, dynamic>> members = [
-  {'name': 'Juan Perez', 'type': 'Desarollador'},
-  {'name': 'Jorge Osorio', 'type': 'Tech Manager'},
-  {'name': 'Maria Camila', 'type': 'Product Desinger'},
-  {'name': 'Sam Perez', 'type': 'Product Owner'},
-]; */
-
 List<String> members = [
   'Juan Perez - Desarollador',
   'Jorge Osorio - Tech Manager',
@@ -47,7 +40,7 @@ class _CreateProjectViewState extends State<CreateProjectView> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(50),
+          padding: const EdgeInsets.all(40),
           child: Form(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.prefixIcon,
     this.enabled = true,
+    this.maxLines,
   });
 
   final String labelText;
@@ -18,12 +19,14 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final Icon? prefixIcon;
   final bool enabled;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       obscureText: obscureText,
       keyboardType: keyboardType,
+      maxLines: maxLines,
       decoration: InputDecoration(
         enabled: enabled,
         prefixIcon: prefixIcon,
