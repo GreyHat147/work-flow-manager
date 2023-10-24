@@ -39,13 +39,6 @@ class TasksView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppTheme.nearlyDarkBlue,
-        title: const Text(
-          'Tareas',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.nearlyDarkBlue,
         onPressed: () {},

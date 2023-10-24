@@ -89,13 +89,6 @@ class ProjectsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppTheme.nearlyDarkBlue,
-        title: const Text(
-          'Proyectos',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
       body: Column(
         children: [
           Padding(

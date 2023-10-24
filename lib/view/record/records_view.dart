@@ -39,13 +39,6 @@ class RecordsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppTheme.nearlyDarkBlue,
-        title: const Text(
-          'Registros',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.nearlyDarkBlue,
         onPressed: () {},
