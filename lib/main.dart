@@ -38,9 +38,7 @@ class WorkFlowManagerApp extends StatelessWidget {
         textTheme: AppTheme.textTheme,
         platform: TargetPlatform.iOS,
       ),
-      home: HomeView(
-        title: '',
-      ),
+      home: CreateRecordView(),
     );
   }
 }
