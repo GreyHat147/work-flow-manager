@@ -6,6 +6,7 @@ import 'package:work_flow_manager/injections.dart';
 import 'package:work_flow_manager/models/project_model.dart';
 import 'package:work_flow_manager/repository/projects/projects_repository.dart';
 import 'package:work_flow_manager/repository/projects/projects_state.dart';
+import 'package:work_flow_manager/view/member/create_member_view.dart';
 import 'package:work_flow_manager/view/widgets/widgets.dart';
 
 List<String> members = [
@@ -151,8 +152,19 @@ class _DetailProjectViewState extends State<DetailProjectView>
                     const SizedBox(height: 30),
                     CustomButton(
                       child: const Text("Agregar Miembro"),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/addMember');
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateMemberView(
+                              projectId: project.id,
+                            ),
+                          ),
+                        ).then(
+                          (value) => context
+                              .read<ProjectsRepository>()
+                              .getProject(project.id!),
+                        );
                       },
                     ),
                   ],
