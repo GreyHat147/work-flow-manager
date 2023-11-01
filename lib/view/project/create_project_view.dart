@@ -1,17 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:work_flow_manager/app_theme.dart';
+import 'package:work_flow_manager/injections.dart';
+import 'package:work_flow_manager/models/member_model.dart';
+import 'package:work_flow_manager/models/project_model.dart';
+import 'package:work_flow_manager/repository/projects/projects_repository.dart';
+import 'package:work_flow_manager/repository/projects/projects_state.dart';
 import 'package:work_flow_manager/view/widgets/widgets.dart';
 
 List<String> proyectTypes = [
   'Nuevo Desarrollo',
   'Mantenimiento',
-];
-
-List<String> members = [
-  'Juan Perez - Desarollador',
-  'Jorge Osorio - Tech Manager',
-  'Maria Camila - Product Desinger',
-  'Sam Perez - Product Owner',
 ];
 
 class CreateProjectView extends StatefulWidget {
@@ -22,132 +24,211 @@ class CreateProjectView extends StatefulWidget {
 }
 
 class _CreateProjectViewState extends State<CreateProjectView> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String proyectType = 'Nuevo Desarrollo';
   final TextEditingController nameController = TextEditingController();
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
-  final TextEditingController searchMemberController = TextEditingController();
+  MemberModel? memberSelected;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void pickDate(TextEditingController field) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1950),
+      //DateTime.now() - not to allow to choose before today.
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate != null) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+
+      setState(() {
+        field.text = formattedDate; //set output date to TextField value.
+      });
+    }
+  }
+
+  void _createMember(BuildContext context) {
+    if (_formKey.currentState!.validate() && memberSelected != null) {
+      print('Creando miembro');
+      ProjectModel project = ProjectModel(
+        id: getIt<FirebaseFirestore>().collection("members").doc().id,
+        name: nameController.text,
+        projectType: proyectType,
+        startDate: DateTime.parse(startDateController.text),
+        endDate: DateTime.parse(endDateController.text),
+        members: [memberSelected!],
+        createdAt: DateTime.now(),
+      );
+      print(project.toJson());
+      context.read<ProjectsRepository>().addProject(project);
+    }
+  }
+
+  Widget _form(ProjectsLoadedState state, BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 30),
+          CustomTextField(
+            labelText: 'Nombre del proyecto',
+            controller: nameController,
+            keyboardType: TextInputType.text,
+            prefixIcon: const Icon(Icons.label),
+          ),
+          const SizedBox(height: 40),
+          CustomTextField(
+            labelText: 'Fecha de inicio',
+            controller: startDateController,
+            keyboardType: TextInputType.text,
+            prefixIcon: const Icon(Icons.calendar_month),
+            onTap: () => pickDate(startDateController),
+          ),
+          const SizedBox(height: 40),
+          CustomTextField(
+            labelText: 'Fecha de fin',
+            controller: endDateController,
+            keyboardType: TextInputType.text,
+            prefixIcon: const Icon(Icons.calendar_month),
+            onTap: () => pickDate(endDateController),
+          ),
+          const SizedBox(height: 40),
+          DropdownButtonFormField(
+            decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.calendar_month),
+              labelText: 'Tipo de proyecto',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                borderSide: BorderSide(color: AppTheme.nearlyDarkBlue),
+              ),
+            ),
+            value: proyectType,
+            icon: const Icon(Icons.keyboard_arrow_down),
+            items: proyectTypes.map((String items) {
+              return DropdownMenuItem(
+                value: items,
+                child: Text(items),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                proyectType = newValue!;
+              });
+            },
+          ),
+          const SizedBox(height: 40),
+          DropdownSearch<String>(
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              searchFieldProps: TextFieldProps(
+                controller: TextEditingController(),
+                cursorColor: Colors.blue,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  hintText: "Busca un miembro",
+                  hintStyle: TextStyle(color: Colors.blue),
+                ),
+              ),
+              showSelectedItems: true,
+              disabledItemFn: (String s) => s.startsWith('I'),
+            ),
+            items: state.members.map((e) => e.name).toList(),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese un valor';
+              }
+              return null;
+            },
+            dropdownDecoratorProps: const DropDownDecoratorProps(
+              dropdownSearchDecoration: InputDecoration(
+                prefixIcon: Icon(Icons.person),
+                labelText: "Selecciona un miembro",
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+              ),
+            ),
+            onChanged: (String? newValue) {
+              setState(() {
+                memberSelected = state.members.firstWhere(
+                  (element) => element.name == newValue,
+                );
+              });
+            },
+            //selectedItem: state.members.first.name,
+          ),
+          const SizedBox(height: 40),
+          CustomButton(
+            onPressed: () => _createMember(context),
+            child: const Text(
+              'Crear',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _resetForm() {
+    _formKey.currentState!.reset();
+    nameController.text = "";
+    startDateController.text = "";
+    endDateController.text = "";
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppTheme.nearlyDarkBlue,
-        title: const Text(
-          'Crear proyecto',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(40),
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 30),
-                CustomTextField(
-                  labelText: 'Nombre del proyecto',
-                  controller: nameController,
-                  keyboardType: TextInputType.text,
-                  prefixIcon: const Icon(Icons.label),
-                ),
-                const SizedBox(height: 40),
-                CustomTextField(
-                  labelText: 'Fecha de inicio',
-                  controller: startDateController,
-                  keyboardType: TextInputType.text,
-                  prefixIcon: const Icon(Icons.calendar_month),
-                ),
-                const SizedBox(height: 40),
-                CustomTextField(
-                  labelText: 'Fecha de fin',
-                  controller: endDateController,
-                  keyboardType: TextInputType.text,
-                  prefixIcon: const Icon(Icons.calendar_month),
-                ),
-                const SizedBox(height: 40),
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.calendar_month),
-                    labelText: 'Tipo de proyecto',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(color: AppTheme.nearlyDarkBlue),
-                    ),
-                  ),
-                  value: proyectType,
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  items: proyectTypes.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      proyectType = newValue!;
-                    });
-                  },
-                ),
-                const SizedBox(height: 40),
-                CustomTextField(
-                  labelText: 'Agregar Miembro',
-                  controller: searchMemberController,
-                  keyboardType: TextInputType.text,
-                  prefixIcon: const Icon(Icons.search),
-                  enabled: false,
-                ),
-                const SizedBox(height: 20),
-                ...members
-                    .map(
-                      (member) => Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5),
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                const Icon(
-                                  Icons.person,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(width: 15),
-                                Expanded(
-                                  child: Text(member),
-                                ),
-                                const SizedBox(width: 15),
-                                IconButton(
-                                  alignment: Alignment.centerRight,
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                const Divider(),
-                const SizedBox(height: 40),
-                CustomButton(
-                  child: const Text(
-                    'Crear',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  onPressed: () {
-                    print('Creando Proyecto');
-                  },
-                )
-              ],
+    return BlocProvider(
+      create: (context) => getIt<ProjectsRepository>()..getMembers(),
+      child: BlocConsumer<ProjectsRepository, ProjectsState>(
+        listener: (context, state) {
+          if (state is ProjectsLoadedState && state.wasProjectCreated) {
+            print('Proyecto creado');
+            _resetForm();
+            Navigator.pop(context);
+          }
+        },
+        builder: (BuildContext context, ProjectsState state) {
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: AppTheme.nearlyDarkBlue,
+              title: const Text(
+                'Crear proyecto',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
-          ),
-        ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(40),
+                child: Builder(
+                  builder: (BuildContext context) {
+                    if (state is ProjectsLoadingState) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (state is ProjectsLoadedState) {
+                      return _form(state, context);
+                    } else {
+                      return const Center(
+                        child: Text('Error'),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

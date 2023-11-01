@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
     this.prefixIcon,
     this.enabled = true,
     this.maxLines,
+    this.onTap,
   });
 
   final String labelText;
@@ -20,10 +21,13 @@ class CustomTextField extends StatelessWidget {
   final Icon? prefixIcon;
   final bool enabled;
   final int? maxLines;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
+      onTap: onTap,
       obscureText: obscureText,
       keyboardType: keyboardType,
       maxLines: maxLines,
@@ -40,6 +44,12 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide(color: AppTheme.nearlyDarkBlue),
         ),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Por favor ingrese un valor';
+        }
+        return null;
+      },
     );
   }
 }

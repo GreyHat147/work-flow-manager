@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:work_flow_manager/models/member_model.dart';
 
 class TaskModel extends Equatable {
   final String? id;
@@ -7,7 +6,9 @@ class TaskModel extends Equatable {
   final String description;
   final DateTime startDate;
   final DateTime endDate;
-  final MemberModel assignedMember;
+  final DateTime createdAt;
+  final String assignedMember;
+  final String projectId;
 
   const TaskModel({
     this.id,
@@ -16,6 +17,8 @@ class TaskModel extends Equatable {
     required this.startDate,
     required this.endDate,
     required this.assignedMember,
+    required this.createdAt,
+    required this.projectId,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -23,10 +26,25 @@ class TaskModel extends Equatable {
       id: json['id'],
       name: json['name'],
       description: json['description'],
-      startDate: json['startDate'],
-      endDate: json['endDate'],
+      startDate: json['startDate'].toDate(),
+      endDate: json['endDate'].toDate(),
+      createdAt: json['createdAt'].toDate(),
       assignedMember: json['assignedMember'],
+      projectId: json['projectId'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'startDate': startDate,
+      'endDate': endDate,
+      'createdAt': createdAt,
+      'assignedMember': assignedMember,
+      'projectId': projectId,
+    };
   }
 
   @override
@@ -36,5 +54,7 @@ class TaskModel extends Equatable {
         startDate,
         endDate,
         assignedMember,
+        createdAt,
+        projectId,
       ];
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:work_flow_manager/app_theme.dart';
+import 'package:work_flow_manager/injections.dart';
+import 'package:work_flow_manager/models/project_model.dart';
+import 'package:work_flow_manager/repository/projects/projects_repository.dart';
+import 'package:work_flow_manager/repository/projects/projects_state.dart';
 import 'package:work_flow_manager/view/widgets/widgets.dart';
 
 List<String> members = [
@@ -33,7 +38,9 @@ List<WorkedHoursData> data = [
 ];
 
 class DetailProjectView extends StatefulWidget {
-  const DetailProjectView({super.key});
+  const DetailProjectView({super.key, required this.id});
+
+  final String id;
 
   @override
   State<DetailProjectView> createState() => _DetailProjectViewState();
@@ -47,6 +54,7 @@ class _DetailProjectViewState extends State<DetailProjectView>
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
+
     super.initState();
   }
 
@@ -56,168 +64,211 @@ class _DetailProjectViewState extends State<DetailProjectView>
     super.dispose();
   }
 
+  Widget _body(ProjectModel project, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(30),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              project.name,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Equipo",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Miembros",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        Text(
+                          "Horas Trabajadas",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    project.members.isNotEmpty
+                        ? Column(
+                            children: project.members
+                                .map(
+                                  (e) => Column(
+                                    children: [
+                                      ListTile(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 5),
+                                        title: Text(e.name),
+                                        trailing: FittedBox(
+                                          child: Row(
+                                            children: [
+                                              Text(e.workedHours.toString()),
+                                              const SizedBox(width: 10),
+                                              IconButton(
+                                                onPressed: () {
+                                                  context
+                                                      .read<
+                                                          ProjectsRepository>()
+                                                      .removeMemberByProject(
+                                                        e.id!,
+                                                        project,
+                                                      );
+                                                },
+                                                icon: const Icon(Icons.close),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        leading: const Icon(Icons.person),
+                                      ),
+                                      const Divider(height: 2),
+                                    ],
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : const Center(child: Text("No hay miembros")),
+                    const SizedBox(height: 30),
+                    CustomButton(
+                      child: const Text("Agregar Miembro"),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/addMember');
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            const Text(
+              "Tareas",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    project.tasks.isNotEmpty
+                        ? Column(
+                            children: project.tasks
+                                .map(
+                                  (e) => Column(
+                                    children: [
+                                      ListTile(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 2),
+                                        title: Text(e.name),
+                                        subtitle: Text(e.assignedMember),
+                                        trailing: IconButton(
+                                          onPressed: () {
+                                            context
+                                                .read<ProjectsRepository>()
+                                                .removeTaskByProject(
+                                                  e.id!,
+                                                  project,
+                                                );
+                                          },
+                                          icon: const Icon(Icons.close),
+                                        ),
+                                        leading: const Icon(Icons.task),
+                                      ),
+                                      const Divider(height: 2),
+                                    ],
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : const Center(child: Text("No hay tareas")),
+                    const SizedBox(height: 30),
+                    CustomButton(
+                      child: const Text("Crear Tarea"),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/addTask');
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            const Text(
+              "Rendiemiento General",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: SfCartesianChart(
+                  primaryXAxis: DateTimeAxis(),
+                  series: <ChartSeries>[
+                    // Renders line chart
+                    LineSeries<WorkedHoursData, DateTime>(
+                      dataSource: data,
+                      xValueMapper: (WorkedHoursData workedHoursData, _) =>
+                          workedHoursData.month,
+                      yValueMapper: (WorkedHoursData workedHoursData, _) =>
+                          workedHoursData.hours,
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext _) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppTheme.nearlyDarkBlue,
-        title: const Text(
-          'Nombre del Proyecto',
-          style: TextStyle(fontSize: 18),
-        ),
+        title: const Text('Detalles del Proyecto'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(30),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /*  Chip(
-                label: Text('Nuevo Desarrollo'),
-              ), */
-              const Text(
-                "Equipo",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Miembros",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          Text(
-                            "Horas Trabajadas",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      ...members
-                          .map(
-                            (e) => Column(
-                              children: [
-                                ListTile(
-                                  contentPadding:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  title: Text(e),
-                                  trailing: FittedBox(
-                                    child: Row(
-                                      children: [
-                                        const Text('8hrs'),
-                                        const SizedBox(width: 10),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.close),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  leading: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.person),
-                                  ),
-                                ),
-                                const Divider(height: 2),
-                              ],
-                            ),
-                          )
-                          .toList(),
-                      const SizedBox(height: 30),
-                      CustomButton(
-                        child: const Text("Agregar Miembro"),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              const Text(
-                "Tareas",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ...tasks
-                          .map(
-                            (e) => Column(
-                              children: [
-                                ListTile(
-                                  contentPadding:
-                                      const EdgeInsets.symmetric(vertical: 2),
-                                  title: Text(e),
-                                  subtitle: const Text('Juan Perez'),
-                                  trailing: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.close),
-                                  ),
-                                  leading: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.task),
-                                  ),
-                                ),
-                                const Divider(height: 2),
-                              ],
-                            ),
-                          )
-                          .toList(),
-                      const SizedBox(height: 30),
-                      CustomButton(
-                        child: const Text("Crear Tarea"),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              const Text(
-                "Rendiemiento General",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SfCartesianChart(
-                    primaryXAxis: DateTimeAxis(),
-                    series: <ChartSeries>[
-                      // Renders line chart
-                      LineSeries<WorkedHoursData, DateTime>(
-                        dataSource: data,
-                        xValueMapper: (WorkedHoursData workedHoursData, _) =>
-                            workedHoursData.month,
-                        yValueMapper: (WorkedHoursData workedHoursData, _) =>
-                            workedHoursData.hours,
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
+      body: BlocProvider(
+        create: (context) => getIt<ProjectsRepository>()..getProject(widget.id),
+        child: BlocBuilder<ProjectsRepository, ProjectsState>(
+          builder: (BuildContext context, ProjectsState state) {
+            if (state is ProjectsLoadingState) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is ProjectDetailsState) {
+              return _body(state.projectSelected, context);
+            } else {
+              return const Center(
+                child: Text('Proyecto no encontrado'),
+              );
+            }
+          },
         ),
       ),
     );
