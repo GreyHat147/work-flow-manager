@@ -18,6 +18,18 @@ class TasksRepository extends Cubit<TasksState> {
     });
   }
 
+  void getTasksByUser() async {
+    _firestore
+        .collection('tasks')
+        .where('assignedMember', isEqualTo: 'dahMQyakXoP7tePV4G03')
+        .snapshots()
+        .listen((snapshot) {
+      final tasks = snapshot.docs.map((doc) => doc.data()).toList();
+      print("tasks");
+      print(tasks);
+    });
+  }
+
   void addTask(TaskModel taskModel, String? projectId) async {
     if (projectId != null) {
       await _firestore.collection('projects').doc(projectId).update({
