@@ -134,7 +134,6 @@ class _CreateMemberViewState extends State<CreateMemberView> {
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                         onPressed: () {
-                          print('Creando Proyecto');
                           _createMember(context);
                         },
                       )

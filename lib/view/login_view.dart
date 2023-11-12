@@ -45,7 +45,7 @@ class LoginView extends StatelessWidget {
                     labelText: 'Contraseña',
                     controller: passwordController,
                     keyboardType: TextInputType.text,
-                    obscureText: true,
+                    //obscureText: true,
                   ),
                   const SizedBox(height: 70),
                   ElevatedButton(

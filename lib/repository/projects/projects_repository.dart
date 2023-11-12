@@ -27,13 +27,16 @@ class ProjectsRepository extends Cubit<ProjectsState> {
   }
 
   void getProject(String id) async {
-    emit(ProjectsLoadingState());
-    _firestore.collection('projects').doc(id).snapshots().listen((snapshot) {
+    //emit(ProjectsLoadingState());
+    /* _firestore.collection('projects').doc(id).snapshots().listen((snapshot) {
       final project = ProjectModel.fromJson(snapshot.data()!);
-      print("found project");
-      print(project);
-      emit(ProjectDetailsState(projectSelected: project));
-    });
+      //emit(ProjectDetailsState(projectSelected: project));
+    }); */
+
+    final DocumentSnapshot documentSnapshot =
+        await _firestore.collection('projects').doc(id).get();
+    emit(ProjectDetailsState(
+        projectSelected: ProjectModel.fromJson(documentSnapshot.data()!)));
   }
 
   void addProject(ProjectModel project) async {
@@ -41,6 +44,25 @@ class ProjectsRepository extends Cubit<ProjectsState> {
         .collection('projects')
         .doc(project.id)
         .set(project.toJson());
+
+    List<String> membersId = project.members.map((e) => e.id!).toList();
+
+    await _firestore
+        .collection('members')
+        .where('id', whereIn: membersId)
+        .get()
+        .then((value) {
+      // ignore: avoid_function_literals_in_foreach_calls
+      value.docs.forEach((element) async {
+        MemberModel member = MemberModel.fromJson(element.data());
+        member.projects.add(project.id!);
+        await _firestore
+            .collection('members')
+            .doc(member.id)
+            .update(member.toJson());
+      });
+    });
+
     emit(ProjectsLoadedState(wasProjectCreated: true));
   }
 
@@ -56,8 +78,6 @@ class ProjectsRepository extends Cubit<ProjectsState> {
   }
 
   void setProject(ProjectModel project) {
-    print("setProject");
-    print(project);
     emit(
       ProjectsLoadedState(
           projectSelected: project,
@@ -67,20 +87,13 @@ class ProjectsRepository extends Cubit<ProjectsState> {
   }
 
   void getMembers() async {
-    emit(ProjectsLoadingState());
-    _firestore.collection('members').snapshots().listen((snapshot) {
-      final members =
-          snapshot.docs.map((doc) => MemberModel.fromJson(doc.data())).toList();
-      print(members);
-      emit(ProjectsLoadedState(members: members));
-    });
-
-    print('getMembers');
+    final snapshot = await _firestore.collection('members').get();
+    final members =
+        snapshot.docs.map((doc) => MemberModel.fromJson(doc.data())).toList();
+    emit(ProjectsLoadedState(members: members));
   }
 
   void removeMemberByProject(String memberId, ProjectModel project) async {
-    print('removeMemberByProject');
-
     project.members.removeWhere((element) => element.id == memberId);
 
     await _firestore
@@ -92,9 +105,6 @@ class ProjectsRepository extends Cubit<ProjectsState> {
   }
 
   void removeTaskByProject(String taskId, ProjectModel project) async {
-    print('removeTaskByProject');
-    print(taskId);
-
     project.tasks.removeWhere((element) => element.id == taskId);
 
     await _firestore

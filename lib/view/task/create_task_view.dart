@@ -43,7 +43,6 @@ class _CreateTaskViewState extends State<CreateTaskView> {
 
   void _createTask(BuildContext context) {
     if (_formKey.currentState!.validate() && selectedMember != null) {
-      print('Creando tarea');
       TaskModel task = TaskModel(
         name: nameController.text,
         description: descriptionController.text,

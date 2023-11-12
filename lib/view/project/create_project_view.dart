@@ -56,9 +56,11 @@ class _CreateProjectViewState extends State<CreateProjectView> {
 
   void _createMember(BuildContext context) {
     if (_formKey.currentState!.validate() && memberSelected != null) {
-      print('Creando miembro');
+      String projectId =
+          getIt<FirebaseFirestore>().collection("members").doc().id;
+      memberSelected!.projects.add(projectId);
       ProjectModel project = ProjectModel(
-        id: getIt<FirebaseFirestore>().collection("members").doc().id,
+        id: projectId,
         name: nameController.text,
         projectType: proyectType,
         startDate: DateTime.parse(startDateController.text),
@@ -66,7 +68,6 @@ class _CreateProjectViewState extends State<CreateProjectView> {
         members: [memberSelected!],
         createdAt: DateTime.now(),
       );
-      print(project.toJson());
       context.read<ProjectsRepository>().addProject(project);
     }
   }
@@ -125,46 +126,58 @@ class _CreateProjectViewState extends State<CreateProjectView> {
             },
           ),
           const SizedBox(height: 40),
-          DropdownSearch<String>(
-            popupProps: PopupProps.menu(
-              showSearchBox: true,
-              searchFieldProps: TextFieldProps(
-                controller: TextEditingController(),
-                cursorColor: Colors.blue,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: "Busca un miembro",
-                  hintStyle: TextStyle(color: Colors.blue),
+          Row(
+            children: [
+              Flexible(
+                child: DropdownSearch<String>(
+                  popupProps: PopupProps.menu(
+                    showSearchBox: true,
+                    searchFieldProps: TextFieldProps(
+                      controller: TextEditingController(),
+                      cursorColor: Colors.blue,
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        hintText: "Busca un miembro",
+                        hintStyle: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                    showSelectedItems: true,
+                    disabledItemFn: (String s) => s.startsWith('I'),
+                  ),
+                  items: state.members.map((e) => e.name).toList(),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese un valor';
+                    }
+                    return null;
+                  },
+                  dropdownDecoratorProps: const DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      labelText: "Selecciona un miembro",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      ),
+                    ),
+                  ),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      memberSelected = state.members.firstWhere(
+                        (element) => element.name == newValue,
+                      );
+                    });
+                  },
+                  //selectedItem: state.members.first.name,
                 ),
               ),
-              showSelectedItems: true,
-              disabledItemFn: (String s) => s.startsWith('I'),
-            ),
-            items: state.members.map((e) => e.name).toList(),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor ingrese un valor';
-              }
-              return null;
+            ],
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/addMember');
             },
-            dropdownDecoratorProps: const DropDownDecoratorProps(
-              dropdownSearchDecoration: InputDecoration(
-                prefixIcon: Icon(Icons.person),
-                labelText: "Selecciona un miembro",
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                ),
-              ),
-            ),
-            onChanged: (String? newValue) {
-              setState(() {
-                memberSelected = state.members.firstWhere(
-                  (element) => element.name == newValue,
-                );
-              });
-            },
-            //selectedItem: state.members.first.name,
+            child: const Text("Crear Miembro"),
           ),
           const SizedBox(height: 40),
           CustomButton(
@@ -193,8 +206,12 @@ class _CreateProjectViewState extends State<CreateProjectView> {
       child: BlocConsumer<ProjectsRepository, ProjectsState>(
         listener: (context, state) {
           if (state is ProjectsLoadedState && state.wasProjectCreated) {
-            print('Proyecto creado');
             _resetForm();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Proyecto creado exitosamente'),
+              ),
+            );
             Navigator.pop(context);
           }
         },
@@ -206,6 +223,12 @@ class _CreateProjectViewState extends State<CreateProjectView> {
                 'Crear proyecto',
                 style: TextStyle(fontSize: 18),
               ),
+              actions: [
+                IconButton(
+                  onPressed: () => {},
+                  icon: const Icon(Icons.delete),
+                ),
+              ],
             ),
             body: SingleChildScrollView(
               child: Padding(

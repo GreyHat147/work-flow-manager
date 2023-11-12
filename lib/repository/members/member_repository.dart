@@ -10,8 +10,6 @@ class MemberRepository extends Cubit<MemberState> {
   void getMembers() async {
     _firestore.collection('members').snapshots().listen((snapshot) {
       final members = snapshot.docs.map((doc) => doc.data()).toList();
-      print("members");
-      print(members);
     });
   }
 
@@ -20,8 +18,12 @@ class MemberRepository extends Cubit<MemberState> {
       await _firestore.collection('projects').doc(projectId).update({
         'members': FieldValue.arrayUnion([memberModel.toJson()])
       });
+      // memberModel.projects.add(projectId);
     }
-    await _firestore.collection('members').add(memberModel.toJson());
+    await _firestore
+        .collection('members')
+        .doc(memberModel.id)
+        .set(memberModel.toJson());
     emit(MemberCreationState(wasCreated: true));
   }
 

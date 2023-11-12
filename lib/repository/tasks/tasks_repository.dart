@@ -7,14 +7,12 @@ import 'package:work_flow_manager/repository/tasks/tasks_state.dart';
 class TasksRepository extends Cubit<TasksState> {
   final FirebaseFirestore _firestore;
   TasksRepository(this._firestore) : super(TasksInitialState()) {
-    _getMembers();
+    //_getMembers();
   }
 
   void getTasks() async {
     _firestore.collection('tasks').snapshots().listen((snapshot) {
       final tasks = snapshot.docs.map((doc) => doc.data()).toList();
-      print("tasks");
-      print(tasks);
     });
   }
 
@@ -25,8 +23,6 @@ class TasksRepository extends Cubit<TasksState> {
         .snapshots()
         .listen((snapshot) {
       final tasks = snapshot.docs.map((doc) => doc.data()).toList();
-      print("tasks");
-      print(tasks);
     });
   }
 
@@ -47,12 +43,12 @@ class TasksRepository extends Cubit<TasksState> {
   }
 
   void _getMembers() async {
-    _firestore.collection('members').snapshots().listen((snapshot) {
-      final members =
-          snapshot.docs.map((doc) => MemberModel.fromJson(doc.data())).toList();
-      print("members");
-      print(members);
-      emit(TasksLoadedState(members: members));
-    });
+    final members = await _firestore.collection('members').get();
+    emit(
+      TasksLoadedState(
+        members:
+            members.docs.map((e) => MemberModel.fromJson(e.data())).toList(),
+      ),
+    );
   }
 }

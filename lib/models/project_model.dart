@@ -25,7 +25,6 @@ class ProjectModel extends Equatable {
   });
 
   static ProjectModel fromJson(dynamic json) {
-    print(json['startDate'].runtimeType);
     return ProjectModel(
       id: json['id'],
       name: json['name'],

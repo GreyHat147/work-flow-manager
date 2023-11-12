@@ -7,10 +7,12 @@ class MemberModel extends Equatable {
   final String password;
   final String memberType;
   final double workedHours;
+  final List<String> projects;
 
   const MemberModel({
     this.id,
     this.workedHours = 0,
+    this.projects = const [],
     required this.name,
     required this.email,
     required this.password,
@@ -18,7 +20,6 @@ class MemberModel extends Equatable {
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
-    print(json);
     return MemberModel(
       id: json['id'],
       name: json['name'],
@@ -26,6 +27,7 @@ class MemberModel extends Equatable {
       password: json['password'],
       memberType: json['memberType'],
       workedHours: (json['workedHours'] as num).toDouble(),
+      projects: List<String>.from(json['projects']),
     );
   }
 
@@ -37,10 +39,18 @@ class MemberModel extends Equatable {
       'password': password,
       'memberType': memberType,
       'workedHours': workedHours,
+      'projects': projects,
     };
   }
 
   @override
-  List<Object?> get props =>
-      [id, name, email, password, memberType, workedHours];
+  List<Object?> get props => [
+        id,
+        name,
+        email,
+        password,
+        memberType,
+        workedHours,
+        projects,
+      ];
 }
