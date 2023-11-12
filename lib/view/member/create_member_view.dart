@@ -59,7 +59,7 @@ class _CreateMemberViewState extends State<CreateMemberView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.nearlyDarkBlue,
+        backgroundColor: AppTheme.appColor,
         title: const Text(
           'Crear miembro',
           style: TextStyle(fontSize: 18),
@@ -105,8 +105,7 @@ class _CreateMemberViewState extends State<CreateMemberView> {
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8.0)),
-                            borderSide:
-                                BorderSide(color: AppTheme.nearlyDarkBlue),
+                            borderSide: BorderSide(color: AppTheme.appColor),
                           ),
                         ),
                         value: memberType,

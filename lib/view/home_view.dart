@@ -80,7 +80,7 @@ class _HomeViewPageState extends State<HomeView> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        backgroundColor: AppTheme.nearlyDarkBlue,
+        backgroundColor: AppTheme.appColor,
         title: Text(_getTitle()),
       ),
       body: _widgetOptions[_selectedIndex],
@@ -90,7 +90,7 @@ class _HomeViewPageState extends State<HomeView> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: AppTheme.nearlyDarkBlue,
+                color: AppTheme.appColor,
               ),
               child: Center(
                 child: Column(

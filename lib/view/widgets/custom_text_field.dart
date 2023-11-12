@@ -37,11 +37,11 @@ class CustomTextField extends StatelessWidget {
         labelText: labelText,
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          borderSide: BorderSide(color: AppTheme.nearlyDarkBlue),
+          borderSide: BorderSide(color: AppTheme.appColor),
         ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          borderSide: BorderSide(color: AppTheme.nearlyDarkBlue),
+          borderSide: BorderSide(color: AppTheme.appColor),
         ),
       ),
       validator: (value) {

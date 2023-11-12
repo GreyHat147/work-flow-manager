@@ -40,7 +40,7 @@ class TasksView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppTheme.nearlyDarkBlue,
+        backgroundColor: AppTheme.appColor,
         onPressed: () {},
         child: const Icon(Icons.add),
       ),

@@ -15,7 +15,7 @@ class CreateRecordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppTheme.nearlyDarkBlue,
+        backgroundColor: AppTheme.appColor,
         title: const Text(
           'Crear registro',
           style: TextStyle(fontSize: 18),

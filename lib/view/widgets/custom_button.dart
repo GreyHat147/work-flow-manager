@@ -20,7 +20,7 @@ class CustomButton extends StatelessWidget {
           // Change your radius here
           borderRadius: BorderRadius.circular(16),
         ),
-        backgroundColor: AppTheme.nearlyDarkBlue,
+        backgroundColor: AppTheme.appColor,
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
       ),
       onPressed: onPressed,

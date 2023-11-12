@@ -311,7 +311,7 @@ class _DetailProjectViewState extends State<DetailProjectView>
 
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: AppTheme.nearlyDarkBlue,
+              backgroundColor: AppTheme.appColor,
               title: const Text('Detalles del Proyecto'),
               actions: [
                 IconButton(

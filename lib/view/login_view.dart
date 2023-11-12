@@ -30,7 +30,7 @@ class LoginView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.nearlyDarkBlue,
+                        color: AppTheme.appColor,
                       ),
                     ),
                   ),
@@ -54,7 +54,7 @@ class LoginView extends StatelessWidget {
                         // Change your radius here
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      backgroundColor: AppTheme.nearlyDarkBlue,
+                      backgroundColor: AppTheme.appColor,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 50, vertical: 20),
                     ),

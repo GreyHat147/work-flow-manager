@@ -166,7 +166,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
       create: (context) => getIt<TasksRepository>(),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppTheme.nearlyDarkBlue,
+          backgroundColor: AppTheme.appColor,
           title: const Text(
             'Crear tarea',
             style: TextStyle(fontSize: 18),

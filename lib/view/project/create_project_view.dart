@@ -108,7 +108,7 @@ class _CreateProjectViewState extends State<CreateProjectView> {
               labelText: 'Tipo de proyecto',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                borderSide: BorderSide(color: AppTheme.nearlyDarkBlue),
+                borderSide: BorderSide(color: AppTheme.appColor),
               ),
             ),
             value: proyectType,
@@ -220,7 +220,7 @@ class _CreateProjectViewState extends State<CreateProjectView> {
         builder: (BuildContext context, ProjectsState state) {
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: AppTheme.nearlyDarkBlue,
+              backgroundColor: AppTheme.appColor,
               title: const Text(
                 'Crear proyecto',
                 style: TextStyle(fontSize: 18),

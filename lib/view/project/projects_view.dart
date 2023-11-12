@@ -100,7 +100,7 @@ class ProjectsView extends StatelessWidget {
           if (state is ProjectsLoadedState) {
             return Scaffold(
               floatingActionButton: FloatingActionButton(
-                backgroundColor: AppTheme.nearlyDarkBlue,
+                backgroundColor: AppTheme.appColor,
                 onPressed: () {
                   Navigator.pushNamed(context, '/createProject');
                 },
