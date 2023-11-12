@@ -9,11 +9,8 @@ import 'package:work_flow_manager/repository/members/member_state.dart';
 import 'package:work_flow_manager/view/widgets/widgets.dart';
 
 List<String> memberTypes = [
-  'Developer',
-  'Tech Manager',
-  'Desinger',
-  'Product Owner',
-  'Scrum Master',
+  'Empleado',
+  'Gerente',
 ];
 
 class CreateMemberView extends StatefulWidget {
@@ -29,7 +26,7 @@ class _CreateMemberViewState extends State<CreateMemberView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  String memberType = 'Developer';
+  String memberType = 'Empleado';
 
   void _createMember(BuildContext context) {
     if (_formKey.currentState!.validate()) {
@@ -52,7 +49,7 @@ class _CreateMemberViewState extends State<CreateMemberView> {
     nameController.text = '';
     emailController.clear();
     emailController.text = '';
-    memberType = 'Developer';
+    memberType = 'Empleado';
   }
 
   @override
@@ -96,6 +93,7 @@ class _CreateMemberViewState extends State<CreateMemberView> {
                         controller: emailController,
                         keyboardType: TextInputType.text,
                         prefixIcon: const Icon(Icons.email),
+                        checkEmail: true,
                       ),
                       const SizedBox(height: 40),
                       DropdownButtonFormField(

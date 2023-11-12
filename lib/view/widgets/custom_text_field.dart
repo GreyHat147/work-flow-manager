@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
     this.enabled = true,
     this.maxLines,
     this.onTap,
+    this.checkEmail = false,
   });
 
   final String labelText;
@@ -22,6 +23,7 @@ class CustomTextField extends StatelessWidget {
   final bool enabled;
   final int? maxLines;
   final VoidCallback? onTap;
+  final bool checkEmail;
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +49,19 @@ class CustomTextField extends StatelessWidget {
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Por favor ingrese un valor';
+        } else if (checkEmail && !value.isValidEmail()) {
+          return 'Por favor ingrese un correo válido';
         }
         return null;
       },
     );
+  }
+}
+
+extension EmailValidator on String {
+  bool isValidEmail() {
+    return RegExp(
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(this);
   }
 }
