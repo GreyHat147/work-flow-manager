@@ -10,20 +10,6 @@ import 'package:work_flow_manager/view/member/create_member_view.dart';
 import 'package:work_flow_manager/view/task/create_task_view.dart';
 import 'package:work_flow_manager/view/widgets/widgets.dart';
 
-List<String> members = [
-  'Juan Perez',
-  'Jorge Osorio',
-  'Maria Camila',
-  'Sam Perez',
-];
-
-List<String> tasks = [
-  'Crear base de datos',
-  'Crear API',
-  'Crear UI',
-  'Crear',
-];
-
 class WorkedHoursData {
   WorkedHoursData(this.month, this.hours);
 
@@ -266,30 +252,77 @@ class _DetailProjectViewState extends State<DetailProjectView>
     );
   }
 
+  void _deleteProyect(String proyectId, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Eliminar Proyecto"),
+        content: const Text("¿Está seguro que desea eliminar el proyecto?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "Cancelar",
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              context.read<ProjectsRepository>().deleteProject(proyectId);
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Eliminar",
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext _) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppTheme.nearlyDarkBlue,
-        title: const Text('Detalles del Proyecto'),
-      ),
-      body: BlocProvider(
-        create: (context) => getIt<ProjectsRepository>()..getProject(widget.id),
-        child: BlocBuilder<ProjectsRepository, ProjectsState>(
-          builder: (BuildContext context, ProjectsState state) {
-            if (state is ProjectsLoadingState) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is ProjectDetailsState) {
-              return _body(state.projectSelected, context);
-            } else {
-              return const Center(
-                child: Text('Proyecto no encontrado'),
-              );
-            }
-          },
-        ),
+    return BlocProvider(
+      create: (context) => getIt<ProjectsRepository>()..getProject(widget.id),
+      child: BlocConsumer<ProjectsRepository, ProjectsState>(
+        listener: (context, state) {
+          if (state is ProjectDeletedState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Proyecto eliminado exitosamente'),
+              ),
+            );
+            Navigator.pop(context);
+          }
+        },
+        builder: (BuildContext context, ProjectsState state) {
+          Widget body = const Center(
+            child: Text('Proyecto no encontrado'),
+          );
+
+          if (state is ProjectsLoadingState) {
+            body = const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is ProjectDetailsState) {
+            body = _body(state.projectSelected, context);
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: AppTheme.nearlyDarkBlue,
+              title: const Text('Detalles del Proyecto'),
+              actions: [
+                IconButton(
+                  onPressed: () => _deleteProyect(widget.id, context),
+                  icon: const Icon(Icons.delete),
+                ),
+              ],
+            ),
+            body: body,
+          );
+        },
       ),
     );
   }

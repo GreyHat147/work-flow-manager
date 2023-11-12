@@ -33,6 +33,8 @@ class ProjectsRepository extends Cubit<ProjectsState> {
       //emit(ProjectDetailsState(projectSelected: project));
     }); */
 
+    print('getting details');
+
     final DocumentSnapshot documentSnapshot =
         await _firestore.collection('projects').doc(id).get();
     emit(ProjectDetailsState(
@@ -73,8 +75,9 @@ class ProjectsRepository extends Cubit<ProjectsState> {
         .update(project.toJson());
   }
 
-  void deleteProject(ProjectModel project) async {
-    await _firestore.collection('projects').doc(project.id).delete();
+  void deleteProject(String projectId) async {
+    await _firestore.collection('projects').doc(projectId).delete();
+    emit(ProjectDeletedState());
   }
 
   void setProject(ProjectModel project) {

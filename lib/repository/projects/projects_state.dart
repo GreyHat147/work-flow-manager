@@ -23,6 +23,11 @@ class ProjectDetailsState extends ProjectsState {
   List<Object?> get props => [];
 }
 
+class ProjectDeletedState extends ProjectsState {
+  @override
+  List<Object?> get props => [];
+}
+
 class ProjectsLoadedState extends ProjectsState {
   final List<ProjectModel> projects;
   final ProjectModel? projectSelected;

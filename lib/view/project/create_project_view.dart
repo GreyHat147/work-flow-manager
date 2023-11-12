@@ -175,7 +175,9 @@ class _CreateProjectViewState extends State<CreateProjectView> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/addMember');
+              Navigator.pushNamed(context, '/addMember').then(
+                (_) => context.read<ProjectsRepository>().getMembers(),
+              );
             },
             child: const Text("Crear Miembro"),
           ),
@@ -223,12 +225,6 @@ class _CreateProjectViewState extends State<CreateProjectView> {
                 'Crear proyecto',
                 style: TextStyle(fontSize: 18),
               ),
-              actions: [
-                IconButton(
-                  onPressed: () => {},
-                  icon: const Icon(Icons.delete),
-                ),
-              ],
             ),
             body: SingleChildScrollView(
               child: Padding(
