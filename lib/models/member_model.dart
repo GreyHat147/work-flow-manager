@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+// ignore: must_be_immutable
 class MemberModel extends Equatable {
   final String? id;
   final String name;
@@ -7,9 +8,9 @@ class MemberModel extends Equatable {
   final String password;
   final String memberType;
   final double workedHours;
-  final List<String> projects;
+  List<String> projects = [];
 
-  const MemberModel({
+  MemberModel({
     this.id,
     this.workedHours = 0,
     this.projects = const [],

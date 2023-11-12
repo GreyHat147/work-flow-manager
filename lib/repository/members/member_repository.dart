@@ -18,7 +18,7 @@ class MemberRepository extends Cubit<MemberState> {
       await _firestore.collection('projects').doc(projectId).update({
         'members': FieldValue.arrayUnion([memberModel.toJson()])
       });
-      memberModel.projects.add(projectId);
+      memberModel.projects = [...memberModel.projects, projectId];
     }
     await _firestore
         .collection('members')

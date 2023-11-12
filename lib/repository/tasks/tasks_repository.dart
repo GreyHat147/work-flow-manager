@@ -6,9 +6,7 @@ import 'package:work_flow_manager/repository/tasks/tasks_state.dart';
 
 class TasksRepository extends Cubit<TasksState> {
   final FirebaseFirestore _firestore;
-  TasksRepository(this._firestore) : super(TasksInitialState()) {
-    //_getMembers();
-  }
+  TasksRepository(this._firestore) : super(TasksInitialState());
 
   void getTasks() async {
     _firestore.collection('tasks').snapshots().listen((snapshot) {
@@ -42,7 +40,7 @@ class TasksRepository extends Cubit<TasksState> {
     await _firestore.collection('tasks').doc(taskId).delete();
   }
 
-  void _getMembers() async {
+  void getMembers() async {
     final members = await _firestore.collection('members').get();
     emit(
       TasksLoadedState(

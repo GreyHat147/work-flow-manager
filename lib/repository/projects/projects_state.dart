@@ -20,7 +20,7 @@ class ProjectDetailsState extends ProjectsState {
   ProjectDetailsState({required this.projectSelected});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [projectSelected];
 }
 
 class ProjectDeletedState extends ProjectsState {

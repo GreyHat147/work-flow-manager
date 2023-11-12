@@ -27,14 +27,6 @@ class ProjectsRepository extends Cubit<ProjectsState> {
   }
 
   void getProject(String id) async {
-    //emit(ProjectsLoadingState());
-    /* _firestore.collection('projects').doc(id).snapshots().listen((snapshot) {
-      final project = ProjectModel.fromJson(snapshot.data()!);
-      //emit(ProjectDetailsState(projectSelected: project));
-    }); */
-
-    print('getting details');
-
     final DocumentSnapshot documentSnapshot =
         await _firestore.collection('projects').doc(id).get();
     emit(ProjectDetailsState(

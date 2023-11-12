@@ -180,7 +180,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<TasksRepository>(),
+      create: (context) => getIt<TasksRepository>()..getMembers(),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppTheme.appColor,
