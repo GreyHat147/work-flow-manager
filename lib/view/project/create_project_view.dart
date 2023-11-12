@@ -41,8 +41,24 @@ class _CreateProjectViewState extends State<CreateProjectView> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1950),
-      //DateTime.now() - not to allow to choose before today.
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppTheme.appColor,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppTheme.appColor,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (pickedDate != null) {
@@ -238,9 +254,7 @@ class _CreateProjectViewState extends State<CreateProjectView> {
                     } else if (state is ProjectsLoadedState) {
                       return _form(state, context);
                     } else {
-                      return const Center(
-                        child: Text('Error'),
-                      );
+                      return const SizedBox();
                     }
                   },
                 ),
