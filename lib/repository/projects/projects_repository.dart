@@ -7,22 +7,45 @@ import 'package:work_flow_manager/repository/projects/projects_state.dart';
 class ProjectsRepository extends Cubit<ProjectsState> {
   final FirebaseFirestore _firestore;
 
-  ProjectsRepository(this._firestore) : super(ProjectsInitialState()) {
-    /*  getProjects();
-    getMembers(); */
+  ProjectsRepository(this._firestore) : super(ProjectsInitialState());
+
+  void getProjectsByUser() async {
+    emit(ProjectsLoadingState());
+    final snapshot = await _firestore
+        .collection('members')
+        .doc("xHwdmbULR74F280NHsd7")
+        .get();
+
+    final MemberModel memberModel = MemberModel.fromJson(snapshot.data()!);
+
+    print(memberModel.projects);
+
+    final snapshotProjects = await _firestore
+        .collection('projects')
+        .where('id', whereIn: memberModel.projects)
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    final List<ProjectModel> projects = snapshotProjects.docs
+        .map((doc) => ProjectModel.fromJson(doc.data()))
+        .toList();
+
+    print(projects);
+
+    emit(ProjectsByUser(projects: projects));
   }
 
   void getProjects() async {
     emit(ProjectsLoadingState());
-    _firestore
+    await _firestore
         .collection('projects')
         .orderBy('createdAt', descending: true)
-        .snapshots()
-        .listen((snapshot) {
-      final projects = snapshot.docs
-          .map((doc) => ProjectModel.fromJson(doc.data()))
-          .toList();
-      emit(ProjectsLoadedState(projects: projects));
+        .get()
+        .then((value) {
+      emit(ProjectsLoadedState(
+          projects: value.docs
+              .map((doc) => ProjectModel.fromJson(doc.data()))
+              .toList()));
     });
   }
 

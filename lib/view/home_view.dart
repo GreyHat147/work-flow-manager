@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:work_flow_manager/app_theme.dart';
+import 'package:work_flow_manager/view/project/projects_by_user_view.dart';
 import 'package:work_flow_manager/view/project/projects_view.dart';
 import 'package:work_flow_manager/view/record/records_view.dart';
 import 'package:work_flow_manager/view/task/tasks_view.dart';
@@ -33,6 +34,7 @@ class _HomeViewPageState extends State<HomeView> {
     ProjectsView(),
     TasksView(),
     RecordsView(),
+    ProjectsByUserView()
   ];
 
   static final List<Menu> menus = [
@@ -50,6 +52,11 @@ class _HomeViewPageState extends State<HomeView> {
       title: 'Registros',
       icon: Icons.line_style,
       index: 2,
+    ),
+    const Menu(
+      title: 'Mis Proyectos',
+      icon: Icons.art_track,
+      index: 3,
     ),
   ];
 
@@ -70,6 +77,9 @@ class _HomeViewPageState extends State<HomeView> {
         break;
       case 2:
         title = 'Registros';
+        break;
+      case 3:
+        title = 'Mis Proyectos';
         break;
     }
     return title;

@@ -54,3 +54,12 @@ class ProjectsErrorState extends ProjectsState {
   @override
   List<Object?> get props => [];
 }
+
+class ProjectsByUser extends ProjectsState {
+  final List<ProjectModel> projects;
+
+  ProjectsByUser({required this.projects});
+
+  @override
+  List<Object?> get props => [projects];
+}

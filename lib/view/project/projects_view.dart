@@ -7,85 +7,6 @@ import 'package:work_flow_manager/repository/projects/projects_state.dart';
 import 'package:work_flow_manager/view/project/detail_project_view.dart';
 import 'package:work_flow_manager/view/widgets/custom_text_field.dart';
 
-class Project {
-  const Project({
-    required this.name,
-    required this.startDate,
-    required this.endDate,
-    required this.type,
-    required this.members,
-  });
-
-  final String name;
-  final String startDate;
-  final String endDate;
-  final String type;
-  final List<String> members;
-}
-
-List<Project> projects = const [
-  Project(
-    name: 'Proyecto 1',
-    startDate: '01/01/2021',
-    endDate: '01/01/2022',
-    type: 'Nuevo Desarrollo',
-    members: [
-      'Juan Perez - Desarollador',
-      'Jorge Osorio - Tech Manager',
-      'Maria Camila - Product Desinger',
-      'Sam Perez - Product Owner',
-    ],
-  ),
-  Project(
-    name: 'Proyecto 2',
-    startDate: '01/01/2021',
-    endDate: '01/01/2022',
-    type: 'Mantenimiento',
-    members: [
-      'Juan Perez - Desarollador',
-      'Jorge Osorio - Tech Manager',
-      'Maria Camila - Product Desinger',
-      'Sam Perez - Product Owner',
-    ],
-  ),
-  Project(
-    name: 'Proyecto 3',
-    startDate: '01/01/2021',
-    endDate: '01/01/2022',
-    type: 'Nuevo Desarrollo',
-    members: [
-      'Juan Perez - Desarollador',
-      'Jorge Osorio - Tech Manager',
-      'Maria Camila - Product Desinger',
-      'Sam Perez - Product Owner',
-    ],
-  ),
-  Project(
-    name: 'Proyecto 4',
-    startDate: '01/01/2021',
-    endDate: '01/01/2022',
-    type: 'Mantenimiento',
-    members: [
-      'Juan Perez - Desarollador',
-      'Jorge Osorio - Tech Manager',
-      'Maria Camila - Product Desinger',
-      'Sam Perez - Product Owner',
-    ],
-  ),
-  Project(
-    name: 'Proyecto 5',
-    startDate: '01/01/2021',
-    endDate: '01/01/2022',
-    type: 'Nuevo Desarrollo',
-    members: [
-      'Juan Perez - Desarollador',
-      'Jorge Osorio - Tech Manager',
-      'Maria Camila - Product Desinger',
-      'Sam Perez - Product Owner',
-    ],
-  ),
-];
-
 class ProjectsView extends StatelessWidget {
   ProjectsView({super.key});
 
@@ -102,7 +23,9 @@ class ProjectsView extends StatelessWidget {
               floatingActionButton: FloatingActionButton(
                 backgroundColor: AppTheme.appColor,
                 onPressed: () {
-                  Navigator.pushNamed(context, '/createProject');
+                  Navigator.pushNamed(context, '/createProject').then((_) {
+                    context.read<ProjectsRepository>().getProjects();
+                  });
                 },
                 child: const Icon(Icons.add),
               ),
