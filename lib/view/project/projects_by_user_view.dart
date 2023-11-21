@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_flow_manager/injections.dart';
+import 'package:work_flow_manager/models/task_model.dart';
 import 'package:work_flow_manager/repository/projects/projects_repository.dart';
 import 'package:work_flow_manager/repository/projects/projects_state.dart';
+import 'package:work_flow_manager/view/task/tasks_view.dart';
 import 'package:work_flow_manager/view/widgets/custom_text_field.dart';
 
 class ProjectsByUserView extends StatelessWidget {
   ProjectsByUserView({super.key});
 
   final TextEditingController searchController = TextEditingController();
+
+  List<TaskModel> getMyTasks(List<TaskModel> tasks) {
+    return tasks
+        .where((element) => element.assignedMember == "xHwdmbULR74F280NHsd7")
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,19 @@ class ProjectsByUserView extends StatelessWidget {
                         title: Text(state.projects[index].name),
                         subtitle: Text(state.projects[index].projectType),
                         trailing: const Icon(Icons.arrow_forward_ios),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return TasksView(
+                                  tasks:
+                                      getMyTasks(state.projects[index].tasks),
+                                );
+                              },
+                            ),
+                          );
+                        },
                       );
                     },
                     separatorBuilder: (context, index) =>

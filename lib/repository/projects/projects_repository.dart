@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_flow_manager/models/member_model.dart';
 import 'package:work_flow_manager/models/project_model.dart';
+import 'package:work_flow_manager/models/task_model.dart';
 import 'package:work_flow_manager/repository/projects/projects_state.dart';
 
 class ProjectsRepository extends Cubit<ProjectsState> {

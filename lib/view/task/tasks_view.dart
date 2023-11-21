@@ -1,48 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:work_flow_manager/app_theme.dart';
+import 'package:work_flow_manager/models/task_model.dart';
+import 'package:work_flow_manager/view/record/records_view.dart';
 import 'package:work_flow_manager/view/widgets/custom_text_field.dart';
 
-class TaskItem {
-  const TaskItem({
-    required this.name,
-    required this.assignedTo,
+class TasksView extends StatelessWidget {
+  TasksView({
+    super.key,
+    required this.tasks,
   });
 
-  final String name;
-  final String assignedTo;
-}
-
-List<TaskItem> tasks = const [
-  TaskItem(
-    name: 'Tarea 1',
-    assignedTo: 'Juan Perez',
-  ),
-  TaskItem(
-    name: 'Tarea 2',
-    assignedTo: 'Jorge Osorio',
-  ),
-  TaskItem(
-    name: 'Tarea 3',
-    assignedTo: 'Maria Camila',
-  ),
-  TaskItem(
-    name: 'Tarea 4',
-    assignedTo: 'Sam Perez',
-  ),
-];
-
-class TasksView extends StatelessWidget {
-  TasksView({super.key});
+  final List<TaskModel> tasks;
 
   final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      appBar: AppBar(
         backgroundColor: AppTheme.appColor,
-        onPressed: () {},
-        child: const Icon(Icons.add),
+        title: const Text("Mis Tareas"),
       ),
       body: Column(
         children: [
@@ -55,23 +32,32 @@ class TasksView extends StatelessWidget {
               prefixIcon: const Icon(Icons.search),
             ),
           ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const Icon(Icons.task),
-                  title: Text(tasks[index].name),
-                  subtitle: Text("Asignado a: ${tasks[index].assignedTo}"),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {},
-                );
-              },
-              separatorBuilder: (context, index) => const Divider(
-                height: 2,
-              ),
-            ),
-          ),
+          tasks.isNotEmpty
+              ? Expanded(
+                  child: ListView.separated(
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: const Icon(Icons.task),
+                        title: Text(tasks[index].name),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return RecordsView();
+                            },
+                          ));
+                        },
+                      );
+                    },
+                    separatorBuilder: (context, index) => const Divider(
+                      height: 2,
+                    ),
+                  ),
+                )
+              : const Center(
+                  child: Text("No hay tareas asignadas"),
+                )
         ],
       ),
     );

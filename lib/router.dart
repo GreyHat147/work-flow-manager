@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:work_flow_manager/view/home_view.dart';
 import 'package:work_flow_manager/view/member/create_member_view.dart';
 import 'package:work_flow_manager/view/project/create_project_view.dart';
+import 'package:work_flow_manager/view/record/create_record_view.dart';
 import 'package:work_flow_manager/view/task/create_task_view.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -13,7 +14,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/addMember':
       return _getPageRoute(const CreateMemberView(), settings);
     case '/addTask':
-      return _getPageRoute(CreateTaskView(), settings);
+      return _getPageRoute(const CreateTaskView(), settings);
+    case '/addRecord':
+      return _getPageRoute(CreateRecordView(), settings);
     default:
       return _getPageRoute(HomeView(title: ''), settings);
   }

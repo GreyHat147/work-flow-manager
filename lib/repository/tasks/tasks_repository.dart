@@ -14,14 +14,15 @@ class TasksRepository extends Cubit<TasksState> {
     });
   }
 
-  void getTasksByUser() async {
-    _firestore
+  void getTasksByUser(String projectId) async {
+    final snapshots = await _firestore
         .collection('tasks')
         .where('assignedMember', isEqualTo: 'dahMQyakXoP7tePV4G03')
-        .snapshots()
-        .listen((snapshot) {
-      final tasks = snapshot.docs.map((doc) => doc.data()).toList();
-    });
+        .where('projectId', isEqualTo: projectId)
+        .get();
+
+    final tasks = snapshots.docs.map((doc) => doc.data()).toList();
+    print(tasks);
   }
 
   void addTask(TaskModel taskModel, String? projectId) async {

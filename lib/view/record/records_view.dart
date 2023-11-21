@@ -39,9 +39,15 @@ class RecordsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppTheme.appColor,
+        title: const Text("Mis Registros"),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.appColor,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/addRecord');
+        },
         child: const Icon(Icons.add),
       ),
       body: Column(

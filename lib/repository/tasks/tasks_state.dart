@@ -28,10 +28,12 @@ class TasksByUsersState extends TasksState {
 class TasksLoadedState extends TasksState {
   final List<MemberModel> members;
   final bool wasTaskCreated;
+  final List<TaskModel> tasks;
 
   TasksLoadedState({
     this.members = const [],
     this.wasTaskCreated = false,
+    this.tasks = const [],
   });
 
   @override
