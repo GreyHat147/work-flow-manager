@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_flow_manager/models/member_model.dart';
 import 'package:work_flow_manager/repository/members/member_state.dart';
 
 class MemberRepository extends Cubit<MemberState> {
   final FirebaseFirestore _firestore;
-  MemberRepository(this._firestore) : super(MemberInitialState());
+  final FirebaseAuth _auth;
+  MemberRepository(
+    this._firestore,
+    this._auth,
+  ) : super(MemberInitialState());
 
   void getMembers() async {
     _firestore.collection('members').snapshots().listen((snapshot) {
@@ -20,6 +25,12 @@ class MemberRepository extends Cubit<MemberState> {
       });
       memberModel.projects = [...memberModel.projects, projectId];
     }
+
+    await _auth.createUserWithEmailAndPassword(
+      email: memberModel.email,
+      password: memberModel.password,
+    );
+
     await _firestore
         .collection('members')
         .doc(memberModel.id)

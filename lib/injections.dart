@@ -18,7 +18,7 @@ Future<void> init() async {
   );
 
   getIt.registerFactory<MemberRepository>(
-    () => MemberRepository(getIt()),
+    () => MemberRepository(getIt(), getIt()),
   );
 
   getIt.registerFactory<TasksRepository>(

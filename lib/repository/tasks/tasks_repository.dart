@@ -22,7 +22,6 @@ class TasksRepository extends Cubit<TasksState> {
         .get();
 
     final tasks = snapshots.docs.map((doc) => doc.data()).toList();
-    print(tasks);
   }
 
   void addTask(TaskModel taskModel, String? projectId) async {

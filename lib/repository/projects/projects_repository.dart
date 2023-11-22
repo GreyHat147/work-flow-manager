@@ -14,7 +14,7 @@ class ProjectsRepository extends Cubit<ProjectsState> {
     emit(ProjectsLoadingState());
     final snapshot = await _firestore
         .collection('members')
-        .doc("xHwdmbULR74F280NHsd7")
+        .doc("eFvg5L2dRwrTIXiKLS5z")
         .get();
 
     final MemberModel memberModel = MemberModel.fromJson(snapshot.data()!);
