@@ -9,6 +9,7 @@ class MemberModel extends Equatable {
   final String memberType;
   final double workedHours;
   List<String> projects = [];
+  String? userUid;
 
   MemberModel({
     this.id,
@@ -18,6 +19,7 @@ class MemberModel extends Equatable {
     required this.email,
     required this.password,
     required this.memberType,
+    this.userUid,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class MemberModel extends Equatable {
       memberType: json['memberType'],
       workedHours: (json['workedHours'] as num).toDouble(),
       projects: List<String>.from(json['projects']),
+      userUid: json['userUid'],
     );
   }
 
@@ -41,6 +44,7 @@ class MemberModel extends Equatable {
       'memberType': memberType,
       'workedHours': workedHours,
       'projects': projects,
+      'userUid': userUid,
     };
   }
 
@@ -53,5 +57,6 @@ class MemberModel extends Equatable {
         memberType,
         workedHours,
         projects,
+        userUid,
       ];
 }

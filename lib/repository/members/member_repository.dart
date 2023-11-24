@@ -26,10 +26,12 @@ class MemberRepository extends Cubit<MemberState> {
       memberModel.projects = [...memberModel.projects, projectId];
     }
 
-    await _auth.createUserWithEmailAndPassword(
+    final UserCredential user = await _auth.createUserWithEmailAndPassword(
       email: memberModel.email,
       password: memberModel.password,
     );
+
+    memberModel.userUid = user.user!.uid;
 
     await _firestore
         .collection('members')
