@@ -20,16 +20,21 @@ Future<void> init() async {
     () => SharedPreferences.getInstance(),
   );
 
+  await getIt.isReady<SharedPreferences>();
   getIt.registerFactory<ProjectsRepository>(
-    () => ProjectsRepository(getIt()),
+    () => ProjectsRepository(
+      getIt(),
+      getIt(),
+    ),
   );
 
   getIt.registerFactory<MemberRepository>(
     () => MemberRepository(getIt(), getIt()),
   );
 
+  await getIt.isReady<SharedPreferences>();
   getIt.registerFactory<TasksRepository>(
-    () => TasksRepository(getIt()),
+    () => TasksRepository(getIt(), getIt()),
   );
 
   getIt.registerFactory<RecordRepository>(

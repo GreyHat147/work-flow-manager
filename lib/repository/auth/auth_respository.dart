@@ -74,6 +74,7 @@ class AuthRepository extends Cubit<AuthState> {
       if (user != null) {
         final MemberModel member = await getMember(user.uid);
         await _sharedPreferences.setString('uid', user.uid);
+        await _sharedPreferences.setString('id', member.id!);
         await _sharedPreferences.setString('role', member.memberType);
         emit(
           AuthLoaded(

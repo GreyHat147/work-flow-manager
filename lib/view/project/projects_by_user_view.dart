@@ -12,10 +12,11 @@ class ProjectsByUserView extends StatelessWidget {
 
   final TextEditingController searchController = TextEditingController();
 
-  List<TaskModel> getMyTasks(List<TaskModel> tasks) {
-    return tasks
-        .where((element) => element.assignedMember == "eFvg5L2dRwrTIXiKLS5z")
-        .toList();
+  List<TaskModel> getMyTasks(List<TaskModel> tasks, BuildContext context) {
+    String? userId = context.read<ProjectsRepository>().getUserId();
+    if (userId == null) return [];
+
+    return tasks.where((element) => element.assignedMember == userId).toList();
   }
 
   @override
@@ -39,37 +40,43 @@ class ProjectsByUserView extends StatelessWidget {
                     prefixIcon: const Icon(Icons.search),
                   ),
                 ),
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: state.projects.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(state.projects[index].name),
-                        subtitle: Text(state.projects[index].projectType),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return TasksView(
-                                  tasks:
-                                      getMyTasks(state.projects[index].tasks),
+                state.projects.isNotEmpty
+                    ? Expanded(
+                        child: ListView.separated(
+                          itemCount: state.projects.length,
+                          itemBuilder: (_, index) {
+                            return ListTile(
+                              title: Text(state.projects[index].name),
+                              subtitle: Text(state.projects[index].projectType),
+                              trailing: const Icon(Icons.arrow_forward_ios),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) {
+                                      return TasksView(
+                                        tasks: getMyTasks(
+                                          state.projects[index].tasks,
+                                          context,
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 );
                               },
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 2),
-                  ),
-                ),
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const Divider(height: 2),
+                        ),
+                      )
+                    : const Center(
+                        child: Text("No tienes ningún proyecto asignado")),
               ],
             );
           } else {
-            return const Center(child: Text("No se encontró proyecto"));
+            return const Center(
+                child: Text("No tienes ningún proyecto asignado"));
           }
         },
       ),

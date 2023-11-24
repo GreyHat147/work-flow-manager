@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work_flow_manager/models/member_model.dart';
 import 'package:work_flow_manager/models/task_model.dart';
 import 'package:work_flow_manager/repository/tasks/tasks_state.dart';
 
 class TasksRepository extends Cubit<TasksState> {
   final FirebaseFirestore _firestore;
-  TasksRepository(this._firestore) : super(TasksInitialState());
+  final SharedPreferences _sharedPreferences;
+  TasksRepository(
+    this._firestore,
+    this._sharedPreferences,
+  ) : super(TasksInitialState());
 
   void getTasks() async {
     _firestore.collection('tasks').snapshots().listen((snapshot) {
@@ -15,9 +20,10 @@ class TasksRepository extends Cubit<TasksState> {
   }
 
   void getTasksByUser(String projectId) async {
+    String userId = _sharedPreferences.getString('id')!;
     final snapshots = await _firestore
         .collection('tasks')
-        .where('assignedMember', isEqualTo: 'dahMQyakXoP7tePV4G03')
+        .where('assignedMember', isEqualTo: userId)
         .where('projectId', isEqualTo: projectId)
         .get();
 

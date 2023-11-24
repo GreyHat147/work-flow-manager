@@ -1,26 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work_flow_manager/models/member_model.dart';
 import 'package:work_flow_manager/models/project_model.dart';
-import 'package:work_flow_manager/models/task_model.dart';
 import 'package:work_flow_manager/repository/projects/projects_state.dart';
 
 class ProjectsRepository extends Cubit<ProjectsState> {
   final FirebaseFirestore _firestore;
+  final SharedPreferences _sharedPreferences;
 
-  ProjectsRepository(this._firestore) : super(ProjectsInitialState());
+  ProjectsRepository(
+    this._firestore,
+    this._sharedPreferences,
+  ) : super(ProjectsInitialState());
+
+  String? getUserId() {
+    return _sharedPreferences.getString('id');
+  }
 
   void getProjectsByUser() async {
     emit(ProjectsLoadingState());
-    final snapshot = await _firestore
-        .collection('members')
-        .doc("eFvg5L2dRwrTIXiKLS5z")
-        .get();
+    String? userId = _sharedPreferences.getString('id');
+    if (userId == null) return;
+    final snapshot = await _firestore.collection('members').doc(userId).get();
 
     if (snapshot.data() != null) {
       final MemberModel memberModel = MemberModel.fromJson(snapshot.data()!);
-
-      print(memberModel.projects);
 
       final snapshotProjects = await _firestore
           .collection('projects')
@@ -32,9 +38,9 @@ class ProjectsRepository extends Cubit<ProjectsState> {
           .map((doc) => ProjectModel.fromJson(doc.data()))
           .toList();
 
-      print(projects);
-
       emit(ProjectsByUser(projects: projects));
+    } else {
+      emit(ProjectsByUser(projects: const []));
     }
   }
 
