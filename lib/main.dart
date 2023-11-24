@@ -45,7 +45,7 @@ class WorkFlowManagerApp extends StatelessWidget {
         platform: TargetPlatform.iOS,
       ),
       onGenerateRoute: generateRoute,
-      home: HomeView(title: 'title'),
+      home: LoginView(),
     );
   }
 }

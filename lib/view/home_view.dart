@@ -129,6 +129,27 @@ class _HomeViewPageState extends State<HomeView> {
                   ),
                 )
                 .toList(),
+            SizedBox(height: MediaQuery.of(context).size.height / 1.9),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ListTile(
+                leading: Icon(
+                  Icons.logout,
+                  color: AppTheme.darkText,
+                ),
+                title: Text(
+                  'Cerrar sesión',
+                  style: const TextStyle(color: AppTheme.darkText),
+                ),
+                selected: _selectedIndex == 0,
+                onTap: () {
+                  // Update the state of the app
+                  _onItemTapped(0);
+                  // Then close the drawer
+                  Navigator.pop(context);
+                },
+              ),
+            ),
           ],
         ),
       ),
