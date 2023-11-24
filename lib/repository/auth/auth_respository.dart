@@ -7,21 +7,32 @@ import 'package:work_flow_manager/models/member_model.dart';
 
 abstract class AuthState extends Equatable {}
 
+class AuthInitial extends AuthState {
+  @override
+  List<Object?> get props => [];
+}
+
 class AuthLoaded extends AuthState {
   AuthLoaded({
     this.msgError = '',
     this.loggedIn = false,
     this.loggedOut = false,
+    this.name = '',
+    this.role = '',
   });
 
   final String msgError;
   final bool loggedIn;
   final bool loggedOut;
+  final String name;
+  final String role;
   @override
   List<Object?> get props => [
         msgError,
         loggedIn,
         loggedOut,
+        name,
+        role,
       ];
 }
 
@@ -33,11 +44,26 @@ class AuthRepository extends Cubit<AuthState> {
   })  : _firebaseAuth = firebaseAuth,
         _sharedPreferences = sharedPreferences,
         _firestore = FirebaseFirestore.instance,
-        super(AuthLoaded());
+        super(AuthInitial());
 
   final FirebaseAuth _firebaseAuth;
   final SharedPreferences _sharedPreferences;
   final FirebaseFirestore _firestore;
+
+  Future<void> checkLogin() async {
+    final String? uid = _sharedPreferences.getString('uid');
+    final String? role = _sharedPreferences.getString('role');
+    if (uid != null && role != null) {
+      final MemberModel member = await getMember(uid);
+      emit(
+        AuthLoaded(
+          loggedIn: true,
+          name: member.name,
+          role: member.memberType,
+        ),
+      );
+    }
+  }
 
   Future<void> login(String email, String password) async {
     try {
@@ -46,10 +72,19 @@ class AuthRepository extends Cubit<AuthState> {
           .signInWithEmailAndPassword(email: email, password: password);
       final User? user = userCredential.user;
       if (user != null) {
+        //print(user);
         final MemberModel member = await getMember(user.uid);
+        print(member.name);
         await _sharedPreferences.setString('uid', user.uid);
         await _sharedPreferences.setString('role', member.memberType);
-        emit(AuthLoaded(loggedIn: true));
+        emit(
+          AuthLoaded(
+            loggedIn: true,
+            name: member.name,
+            role: member.memberType,
+          ),
+        );
+        print(state);
       }
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -70,7 +105,9 @@ class AuthRepository extends Cubit<AuthState> {
         .collection('members')
         .where('userUid', isEqualTo: uid)
         .get()
-        .then((value) => value.docs.first);
+        .then((value) {
+      return value.docs.first;
+    });
     return MemberModel.fromJson(member.data()!);
   }
 

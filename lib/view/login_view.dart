@@ -34,6 +34,14 @@ class LoginView extends StatelessWidget {
               ),
             );
           }
+
+          if (state is AuthLoaded && state.loggedIn) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/home',
+              (route) => false,
+            );
+          }
         },
         builder: (context, state) {
           return Scaffold(

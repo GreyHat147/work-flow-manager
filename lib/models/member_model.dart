@@ -29,8 +29,11 @@ class MemberModel extends Equatable {
       email: json['email'],
       password: json['password'],
       memberType: json['memberType'],
-      workedHours: (json['workedHours'] as num).toDouble(),
-      projects: List<String>.from(json['projects']),
+      workedHours: json['workedHours'] != null
+          ? (json['workedHours'] as num).toDouble()
+          : 0,
+      projects:
+          json['projects'] != null ? List<String>.from(json['projects']) : [],
       userUid: json['userUid'],
     );
   }

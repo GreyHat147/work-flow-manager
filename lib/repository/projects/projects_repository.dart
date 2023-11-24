@@ -17,23 +17,25 @@ class ProjectsRepository extends Cubit<ProjectsState> {
         .doc("eFvg5L2dRwrTIXiKLS5z")
         .get();
 
-    final MemberModel memberModel = MemberModel.fromJson(snapshot.data()!);
+    if (snapshot.data() != null) {
+      final MemberModel memberModel = MemberModel.fromJson(snapshot.data()!);
 
-    print(memberModel.projects);
+      print(memberModel.projects);
 
-    final snapshotProjects = await _firestore
-        .collection('projects')
-        .where('id', whereIn: memberModel.projects)
-        .orderBy('createdAt', descending: true)
-        .get();
+      final snapshotProjects = await _firestore
+          .collection('projects')
+          .where('id', whereIn: memberModel.projects)
+          .orderBy('createdAt', descending: true)
+          .get();
 
-    final List<ProjectModel> projects = snapshotProjects.docs
-        .map((doc) => ProjectModel.fromJson(doc.data()))
-        .toList();
+      final List<ProjectModel> projects = snapshotProjects.docs
+          .map((doc) => ProjectModel.fromJson(doc.data()))
+          .toList();
 
-    print(projects);
+      print(projects);
 
-    emit(ProjectsByUser(projects: projects));
+      emit(ProjectsByUser(projects: projects));
+    }
   }
 
   void getProjects() async {

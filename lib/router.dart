@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:work_flow_manager/view/home_view.dart';
+import 'package:work_flow_manager/view/login_view.dart';
 import 'package:work_flow_manager/view/member/create_member_view.dart';
 import 'package:work_flow_manager/view/project/create_project_view.dart';
-import 'package:work_flow_manager/view/record/create_record_view.dart';
 import 'package:work_flow_manager/view/task/create_task_view.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-/*     case '/projectDetails':
-      return _getPageRoute(const DetailProjectView(), settings); */
     case '/createProject':
       return _getPageRoute(const CreateProjectView(), settings);
     case '/addMember':
       return _getPageRoute(const CreateMemberView(), settings);
     case '/addTask':
       return _getPageRoute(const CreateTaskView(), settings);
+    case '/home':
+      return _getPageRoute(HomeView(title: ''), settings);
+    case '/login':
+      return _getPageRoute(LoginView(), settings);
     default:
       return _getPageRoute(HomeView(title: ''), settings);
   }
