@@ -72,9 +72,7 @@ class AuthRepository extends Cubit<AuthState> {
           .signInWithEmailAndPassword(email: email, password: password);
       final User? user = userCredential.user;
       if (user != null) {
-        //print(user);
         final MemberModel member = await getMember(user.uid);
-        print(member.name);
         await _sharedPreferences.setString('uid', user.uid);
         await _sharedPreferences.setString('role', member.memberType);
         emit(
@@ -84,7 +82,6 @@ class AuthRepository extends Cubit<AuthState> {
             role: member.memberType,
           ),
         );
-        print(state);
       }
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

@@ -62,7 +62,6 @@ class _HomeViewPageState extends State<HomeView> {
   }
 
   String _getTitleByMenu(AuthState state) {
-    print(state);
     String title = '';
     if (state is AuthLoaded) {
       if (state.role == "Gerente") {
@@ -92,8 +91,6 @@ class _HomeViewPageState extends State<HomeView> {
   }
 
   Widget _getBody(AuthState state) {
-    print("body");
-    print(state);
     if (state is AuthLoaded) {
       if (state.role == "Gerente") {
         return _widgetOptionsManager.elementAt(_selectedIndex);
