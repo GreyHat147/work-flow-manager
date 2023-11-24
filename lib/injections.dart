@@ -41,6 +41,7 @@ Future<void> init() async {
     () => AuthRepository(
       firebaseAuth: getIt(),
       sharedPreferences: getIt(),
+      firestore: getIt(),
     ),
   );
 }
