@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
     this.maxLines,
     this.onTap,
     this.checkEmail = false,
+    this.readOnly = false,
   });
 
   final String labelText;
@@ -24,6 +25,7 @@ class CustomTextField extends StatelessWidget {
   final int? maxLines;
   final VoidCallback? onTap;
   final bool checkEmail;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      readOnly: readOnly,
       decoration: InputDecoration(
         enabled: enabled,
         prefixIcon: prefixIcon,

@@ -44,7 +44,7 @@ class TasksView extends StatelessWidget {
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return RecordsView();
+                              return RecordsView(taskId: tasks[index].id!);
                             },
                           ));
                         },

@@ -15,8 +15,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(const CreateMemberView(), settings);
     case '/addTask':
       return _getPageRoute(const CreateTaskView(), settings);
-    case '/addRecord':
-      return _getPageRoute(CreateRecordView(), settings);
     default:
       return _getPageRoute(HomeView(title: ''), settings);
   }
