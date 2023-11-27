@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:work_flow_manager/models/member_model.dart';
 
 abstract class MemberState extends Equatable {}
 

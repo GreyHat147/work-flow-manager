@@ -14,11 +14,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/addTask':
       return _getPageRoute(const CreateTaskView(), settings);
     case '/home':
-      return _getPageRoute(HomeView(title: ''), settings);
+      return _getPageRoute(const HomeView(title: ''), settings);
     case '/login':
       return _getPageRoute(LoginView(), settings);
     default:
-      return _getPageRoute(HomeView(title: ''), settings);
+      return _getPageRoute(const HomeView(title: ''), settings);
   }
 }
 

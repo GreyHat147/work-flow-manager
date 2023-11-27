@@ -6,15 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:work_flow_manager/app_theme.dart';
 import 'package:work_flow_manager/injections.dart';
 import 'package:work_flow_manager/router.dart';
-import 'package:work_flow_manager/view/home_view.dart';
-import 'package:work_flow_manager/view/member/create_member_view.dart';
-import 'package:work_flow_manager/view/project/create_project_view.dart';
-import 'package:work_flow_manager/view/project/detail_project_view.dart';
-import 'package:work_flow_manager/view/project/projects_view.dart';
-import 'package:work_flow_manager/view/record/create_record_view.dart';
-import 'package:work_flow_manager/view/record/records_view.dart';
-import 'package:work_flow_manager/view/task/create_task_view.dart';
-import 'package:work_flow_manager/view/task/tasks_view.dart';
 import 'package:work_flow_manager/view/view.dart';
 import 'firebase_options.dart';
 

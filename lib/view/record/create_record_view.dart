@@ -218,7 +218,6 @@ class _CreateRecordViewState extends State<CreateRecordView> {
           }
 
           if (state is RecordLoadedState && state.recordDeleted) {
-            print("record deletted");
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Registro eliminado exitosamente'),
