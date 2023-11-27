@@ -5,6 +5,7 @@ import 'package:work_flow_manager/injections.dart';
 import 'package:work_flow_manager/repository/auth/auth_respository.dart';
 import 'package:work_flow_manager/view/project/projects_by_user_view.dart';
 import 'package:work_flow_manager/view/project/projects_view.dart';
+import 'package:work_flow_manager/view/reports/reports_view.dart';
 
 class Menu {
   const Menu({
@@ -33,6 +34,7 @@ class _HomeViewPageState extends State<HomeView> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptionsManager = <Widget>[
     ProjectsView(),
+    const ReportsView()
   ];
 
   static final List<Widget> _widgetOptionsEmployee = <Widget>[
@@ -45,6 +47,7 @@ class _HomeViewPageState extends State<HomeView> {
       icon: Icons.list,
       index: 0,
     ),
+    const Menu(title: 'Reportes', icon: Icons.file_copy, index: 1),
   ];
 
   static final List<Menu> menusEmployee = [
@@ -68,6 +71,9 @@ class _HomeViewPageState extends State<HomeView> {
         switch (_selectedIndex) {
           case 0:
             title = 'Proyectos';
+            break;
+          case 1:
+            title = 'Reportes';
             break;
         }
       } else {
