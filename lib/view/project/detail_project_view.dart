@@ -223,7 +223,7 @@ class _DetailProjectViewState extends State<DetailProjectView>
               ),
             ),
             const SizedBox(height: 30),
-            const Text(
+            /*  const Text(
               "Rendiemiento General",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
@@ -245,7 +245,7 @@ class _DetailProjectViewState extends State<DetailProjectView>
                   ],
                 ),
               ),
-            )
+            ) */
           ],
         ),
       ),
