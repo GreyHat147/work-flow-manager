@@ -11,8 +11,9 @@ class ProjectModel extends Equatable {
   final String projectType;
   final List<MemberModel> members;
   final List<TaskModel> tasks;
+  double? totalHours;
 
-  const ProjectModel({
+  ProjectModel({
     this.id,
     required this.name,
     required this.startDate,
@@ -21,6 +22,7 @@ class ProjectModel extends Equatable {
     required this.members,
     required this.createdAt,
     this.tasks = const [],
+    this.totalHours = 0,
   });
 
   static ProjectModel fromJson(dynamic json) {
@@ -37,6 +39,8 @@ class ProjectModel extends Equatable {
       tasks: json['tasks'] != null
           ? json['tasks'].map<TaskModel>((e) => TaskModel.fromJson(e)).toList()
           : [],
+      totalHours:
+          json['totalHours'] != null ? json['totalHours'].toDouble() : 0,
     );
   }
 
@@ -50,10 +54,18 @@ class ProjectModel extends Equatable {
       'members': members.map((e) => e.toJson()).toList(),
       'createdAt': createdAt,
       'tasks': tasks.map((e) => e.toJson()).toList(),
+      'totalHours': totalHours,
     };
   }
 
   @override
-  List<Object> get props =>
-      [name, startDate, endDate, members, projectType, createdAt, tasks];
+  List<Object> get props => [
+        name,
+        startDate,
+        endDate,
+        members,
+        projectType,
+        createdAt,
+        tasks,
+      ];
 }

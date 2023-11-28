@@ -8,9 +8,14 @@ import 'package:work_flow_manager/view/record/create_record_view.dart';
 import 'package:work_flow_manager/view/widgets/custom_text_field.dart';
 
 class RecordsView extends StatelessWidget {
-  RecordsView({super.key, required this.taskId});
+  RecordsView({
+    super.key,
+    required this.taskId,
+    required this.projectId,
+  });
 
   final String taskId;
+  final String projectId;
 
   final TextEditingController searchController = TextEditingController();
 
@@ -32,7 +37,10 @@ class RecordsView extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return CreateRecordView(taskId: taskId);
+                      return CreateRecordView(
+                        taskId: taskId,
+                        projectId: projectId,
+                      );
                     },
                   ),
                 ).then((_) =>
@@ -83,6 +91,7 @@ class RecordsView extends StatelessWidget {
                                         MaterialPageRoute(
                                           builder: (context) {
                                             return CreateRecordView(
+                                              projectId: projectId,
                                               taskId: taskId,
                                               recordToUpdate:
                                                   state.records[index],

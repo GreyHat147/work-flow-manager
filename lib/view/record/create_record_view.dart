@@ -12,10 +12,12 @@ class CreateRecordView extends StatefulWidget {
   const CreateRecordView({
     super.key,
     required this.taskId,
+    required this.projectId,
     this.recordToUpdate,
   });
 
   final RecordModel? recordToUpdate;
+  final String projectId;
 
   final String taskId;
 
@@ -121,7 +123,10 @@ class _CreateRecordViewState extends State<CreateRecordView> {
         workedHours: endTime.difference(startTime).inHours,
       );
 
-      await context.read<RecordRepository>().updateRecord(recordModel);
+      await context.read<RecordRepository>().updateRecord(
+            recordModel,
+            widget.projectId,
+          );
     }
   }
 
@@ -158,7 +163,9 @@ class _CreateRecordViewState extends State<CreateRecordView> {
         workedHours: endTime.difference(startTime).inHours,
       );
 
-      await context.read<RecordRepository>().addRecord(recordModel);
+      await context
+          .read<RecordRepository>()
+          .addRecord(recordModel, widget.projectId);
     }
   }
 

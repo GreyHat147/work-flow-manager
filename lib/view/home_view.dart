@@ -100,8 +100,10 @@ class _HomeViewPageState extends State<HomeView> {
     if (state is AuthLoaded) {
       if (state.role == "Gerente") {
         return _widgetOptionsManager.elementAt(_selectedIndex);
-      } else {
+      } else if (state.role == "Empleado") {
         return _widgetOptionsEmployee.elementAt(_selectedIndex);
+      } else {
+        return Container();
       }
     } else {
       return Container();

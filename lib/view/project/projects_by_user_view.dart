@@ -55,6 +55,7 @@ class ProjectsByUserView extends StatelessWidget {
                                   MaterialPageRoute(
                                     builder: (_) {
                                       return TasksView(
+                                        projectId: state.projects[index].id!,
                                         tasks: getMyTasks(
                                           state.projects[index].tasks,
                                           context,

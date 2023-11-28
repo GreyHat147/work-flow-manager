@@ -7,9 +7,11 @@ import 'package:work_flow_manager/view/widgets/custom_text_field.dart';
 class TasksView extends StatelessWidget {
   TasksView({
     super.key,
+    required this.projectId,
     required this.tasks,
   });
 
+  final String projectId;
   final List<TaskModel> tasks;
 
   final TextEditingController searchController = TextEditingController();
@@ -44,7 +46,10 @@ class TasksView extends StatelessWidget {
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return RecordsView(taskId: tasks[index].id!);
+                              return RecordsView(
+                                taskId: tasks[index].id!,
+                                projectId: projectId,
+                              );
                             },
                           ));
                         },

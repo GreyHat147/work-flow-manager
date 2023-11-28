@@ -7,7 +7,7 @@ class MemberModel extends Equatable {
   final String email;
   final String password;
   final String memberType;
-  final double workedHours;
+  double workedHours;
   List<String> projects = [];
   String? userUid;
 
