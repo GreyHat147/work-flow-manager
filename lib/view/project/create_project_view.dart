@@ -123,10 +123,13 @@ class _CreateProjectViewState extends State<CreateProjectView> {
           ),
           const SizedBox(height: 40),
           DropdownButtonFormField(
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.calendar_month),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.calendar_month),
               labelText: 'Tipo de proyecto',
-              border: OutlineInputBorder(
+              labelStyle: TextStyle(
+                  fontFamily:
+                      Theme.of(context).textTheme.bodyMedium!.fontFamily),
+              border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 borderSide: BorderSide(color: AppTheme.appColor),
               ),
@@ -171,8 +174,12 @@ class _CreateProjectViewState extends State<CreateProjectView> {
                     }
                     return null;
                   },
-                  dropdownDecoratorProps: const DropDownDecoratorProps(
-                    dropdownSearchDecoration: InputDecoration(
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    baseStyle: TextStyle(
+                        fontSize: 16,
+                        fontFamily:
+                            Theme.of(context).textTheme.bodyMedium!.fontFamily),
+                    dropdownSearchDecoration: const InputDecoration(
                       prefixIcon: Icon(Icons.person),
                       labelText: "Selecciona un miembro",
                       border: OutlineInputBorder(

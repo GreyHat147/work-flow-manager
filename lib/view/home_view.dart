@@ -129,7 +129,10 @@ class _HomeViewPageState extends State<HomeView> {
             backgroundColor: AppTheme.background,
             appBar: AppBar(
               backgroundColor: AppTheme.appColor,
-              title: Text(_getTitleByMenu(state)),
+              title: Text(
+                _getTitleByMenu(state),
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
             body: _getBody(state),
             drawer: Drawer(

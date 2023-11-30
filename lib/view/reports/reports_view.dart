@@ -161,11 +161,17 @@ class _ReportsViewState extends State<ReportsView> {
                 children: [
                   DropdownSearch<String>(
                     items: state.projects.map((e) => e.name).toList(),
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                    dropdownDecoratorProps: DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
-                        prefixIcon: Icon(Icons.list),
+                        prefixIcon: const Icon(Icons.list),
                         labelText: "Seleccione un proyecto",
-                        border: OutlineInputBorder(
+                        labelStyle: TextStyle(
+                            fontFamily: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .fontFamily,
+                            fontSize: 15),
+                        border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.blue),
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
@@ -185,11 +191,17 @@ class _ReportsViewState extends State<ReportsView> {
                   DropdownSearch<String>(
                     enabled: projectSelected != null,
                     items: reportTypes.map((e) => e.name).toList(),
-                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                    dropdownDecoratorProps: DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
-                        prefixIcon: Icon(Icons.list),
+                        prefixIcon: const Icon(Icons.list),
                         labelText: "Seleccione un tipo de reporte",
-                        border: OutlineInputBorder(
+                        labelStyle: TextStyle(
+                            fontFamily: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .fontFamily,
+                            fontSize: 15),
+                        border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.blue),
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),

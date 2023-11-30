@@ -36,8 +36,10 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       maxLines: maxLines,
       readOnly: readOnly,
+      style: const TextStyle(fontSize: 16),
       decoration: InputDecoration(
-        labelStyle: Theme.of(context).textTheme.titleSmall,
+        labelStyle: Theme.of(context).textTheme.bodyMedium
+          ?..copyWith(color: AppTheme.appColor),
         enabled: enabled,
         prefixIcon: prefixIcon,
         labelText: labelText,

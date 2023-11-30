@@ -149,11 +149,15 @@ class _CreateTaskViewState extends State<CreateTaskView> {
               disabledItemFn: (String s) => s.startsWith('I'),
             ),
             items: state.members.map((member) => member.name).toList(),
-            dropdownDecoratorProps: const DropDownDecoratorProps(
+            dropdownDecoratorProps: DropDownDecoratorProps(
               dropdownSearchDecoration: InputDecoration(
-                prefixIcon: Icon(Icons.person),
+                prefixIcon: const Icon(Icons.person),
                 labelText: "Selecciona un miembro",
-                border: OutlineInputBorder(
+                labelStyle: TextStyle(
+                    fontFamily:
+                        Theme.of(context).textTheme.bodyMedium!.fontFamily,
+                    fontSize: 15),
+                border: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.blue),
                   borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
