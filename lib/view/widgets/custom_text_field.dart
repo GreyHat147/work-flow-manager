@@ -37,6 +37,7 @@ class CustomTextField extends StatelessWidget {
       maxLines: maxLines,
       readOnly: readOnly,
       decoration: InputDecoration(
+        labelStyle: Theme.of(context).textTheme.titleSmall,
         enabled: enabled,
         prefixIcon: prefixIcon,
         labelText: labelText,

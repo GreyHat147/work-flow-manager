@@ -55,13 +55,12 @@ class LoginView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Icon(Icons.calendar_month,
-                            size: 100, color: AppTheme.grey),
+                        Image.asset('assets/logo.png'),
                         const SizedBox(height: 30),
                         const Align(
                           alignment: Alignment.center,
                           child: Text(
-                            'Work Flow Manager',
+                            'Workflow Manager',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -69,7 +68,7 @@ class LoginView extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 80),
+                        const SizedBox(height: 60),
                         CustomTextField(
                           labelText: 'Correo electrónico',
                           controller: emailController,
@@ -80,7 +79,7 @@ class LoginView extends StatelessWidget {
                             color: AppTheme.appColor,
                           ),
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 30),
                         CustomTextField(
                           labelText: 'Contraseña',
                           controller: passwordController,

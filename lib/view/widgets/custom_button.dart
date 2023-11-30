@@ -15,6 +15,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        textStyle: Theme.of(context).textTheme.bodyMedium,
         minimumSize: const Size.fromHeight(40),
         shape: RoundedRectangleBorder(
           // Change your radius here

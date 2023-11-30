@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   AppTheme._();
@@ -20,9 +21,9 @@ class AppTheme {
   static const Color dismissibleBackground = Color(0xFF364A54);
   static const Color spacer = Color(0xFFF2F2F2);
 
-  static const String fontName = 'Roboto';
+  static String fontName = GoogleFonts.nunitoSans().fontFamily!;
 
-  static const TextTheme textTheme = TextTheme(
+  static TextTheme textTheme = TextTheme(
     headlineMedium: display1,
     headlineSmall: headline,
     titleLarge: title,
@@ -32,7 +33,7 @@ class AppTheme {
     bodySmall: caption,
   );
 
-  static const TextStyle display1 = TextStyle(
+  static TextStyle display1 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
     fontSize: 36,
@@ -41,7 +42,7 @@ class AppTheme {
     color: darkerText,
   );
 
-  static const TextStyle headline = TextStyle(
+  static TextStyle headline = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
     fontSize: 24,
@@ -49,7 +50,7 @@ class AppTheme {
     color: darkerText,
   );
 
-  static const TextStyle title = TextStyle(
+  static TextStyle title = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
     fontSize: 16,
@@ -57,7 +58,7 @@ class AppTheme {
     color: darkerText,
   );
 
-  static const TextStyle subtitle = TextStyle(
+  static TextStyle subtitle = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
     fontSize: 14,
@@ -65,7 +66,7 @@ class AppTheme {
     color: darkText,
   );
 
-  static const TextStyle body2 = TextStyle(
+  static TextStyle body2 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
     fontSize: 14,
@@ -73,7 +74,7 @@ class AppTheme {
     color: darkText,
   );
 
-  static const TextStyle body1 = TextStyle(
+  static TextStyle body1 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
     fontSize: 16,
@@ -81,7 +82,7 @@ class AppTheme {
     color: darkText,
   );
 
-  static const TextStyle caption = TextStyle(
+  static TextStyle caption = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
     fontSize: 12,
