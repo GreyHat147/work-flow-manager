@@ -64,6 +64,10 @@ class ProjectsView extends StatelessWidget {
                                         );
                                       },
                                     ),
+                                  ).then(
+                                    (_) => context
+                                        .read<ProjectsRepository>()
+                                        .getProjects(),
                                   );
                                 },
                               );

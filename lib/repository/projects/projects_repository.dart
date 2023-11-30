@@ -44,12 +44,14 @@ class ProjectsRepository extends Cubit<ProjectsState> {
   }
 
   void getProjects() async {
+    print("getting projects");
     emit(ProjectsLoadingState());
     await _firestore
         .collection('projects')
         .orderBy('createdAt', descending: true)
         .get()
         .then((value) {
+      print(value.docs);
       emit(ProjectsLoadedState(
           projects: value.docs
               .map((doc) => ProjectModel.fromJson(doc.data()))
