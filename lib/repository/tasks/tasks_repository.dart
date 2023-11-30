@@ -47,11 +47,14 @@ class TasksRepository extends Cubit<TasksState> {
   }
 
   void getMembers() async {
-    final members = await _firestore.collection('members').get();
+    final membersSnapshot = await _firestore.collection('members').get();
+    final members = membersSnapshot.docs
+        .map((e) => MemberModel.fromJson(e.data()))
+        .toList();
+    members.removeWhere((element) => element.id == "5NlEdhBMAeXHgIeBS1wf");
     emit(
       TasksLoadedState(
-        members:
-            members.docs.map((e) => MemberModel.fromJson(e.data())).toList(),
+        members: members,
       ),
     );
   }

@@ -60,9 +60,12 @@ class _CreateTaskViewState extends State<CreateTaskView> {
   void pickDate(TextEditingController field) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1950),
-      //DateTime.now() - not to allow to choose before today.
+      initialDate: startDateController.text.isNotEmpty
+          ? DateTime.parse(startDateController.text)
+          : DateTime.now(),
+      firstDate: startDateController.text.isNotEmpty
+          ? DateTime.parse(startDateController.text)
+          : DateTime(1950),
       lastDate: DateTime(2100),
       builder: (context, child) {
         return Theme(

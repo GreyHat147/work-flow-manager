@@ -39,8 +39,12 @@ class _CreateProjectViewState extends State<CreateProjectView> {
   void pickDate(TextEditingController field) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1950),
+      initialDate: startDateController.text.isNotEmpty
+          ? DateTime.parse(startDateController.text)
+          : DateTime.now(),
+      firstDate: startDateController.text.isNotEmpty
+          ? DateTime.parse(startDateController.text)
+          : DateTime(1950),
       lastDate: DateTime(2100),
       builder: (context, child) {
         return Theme(

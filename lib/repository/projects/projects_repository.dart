@@ -116,6 +116,8 @@ class ProjectsRepository extends Cubit<ProjectsState> {
     final snapshot = await _firestore.collection('members').get();
     final members =
         snapshot.docs.map((doc) => MemberModel.fromJson(doc.data())).toList();
+
+    members.removeWhere((element) => element.id == "5NlEdhBMAeXHgIeBS1wf");
     emit(ProjectsLoadedState(members: members));
   }
 
