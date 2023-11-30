@@ -92,7 +92,11 @@ class ReportsRepository extends Cubit<ReportsState> {
           ProjectModel.fromJson(projectSnapshot.data()!);
       List<Map<String, dynamic>> hoursByMemberOfProject = [];
 
-      for (var member in project.members) {
+      final List<MemberModel> employees = project.members
+          .where((element) => element.memberType == 'Empleado')
+          .toList();
+
+      for (var member in employees) {
         hoursByMemberOfProject.add({
           'name': member.name,
           'hours': member.workedHours,
@@ -113,7 +117,7 @@ class ReportsRepository extends Cubit<ReportsState> {
       membersByProject.add({
         'id': member.id,
         'name': member.name,
-        'workedHours': member.workedHours,
+        'workedHours': project.members.length,
       });
     }
 
@@ -134,7 +138,7 @@ class ReportsRepository extends Cubit<ReportsState> {
         if (snapshot.exists) {
           final MemberModel member =
               MemberModel.fromJson(snapshot.data()! as Map<String, dynamic>);
-
+          if (member.memberType == 'Gerente') return;
           final memberExists = tasksByMemberOfProject
               .where((element) => element['id'] == member.id);
 
@@ -154,7 +158,6 @@ class ReportsRepository extends Cubit<ReportsState> {
           }
         }
       }
-      print(tasksByMemberOfProject);
       emit((state as ReportsLoaded)
           .copyWith(tasksByMemberOfProject: tasksByMemberOfProject));
     }

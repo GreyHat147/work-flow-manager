@@ -47,11 +47,13 @@ class TasksRepository extends Cubit<TasksState> {
   }
 
   void getMembers() async {
+    String userId = _sharedPreferences.getString('id')!;
     final membersSnapshot = await _firestore.collection('members').get();
     final members = membersSnapshot.docs
         .map((e) => MemberModel.fromJson(e.data()))
         .toList();
-    members.removeWhere((element) => element.id == "5NlEdhBMAeXHgIeBS1wf");
+    members.removeWhere((element) =>
+        element.id == "5NlEdhBMAeXHgIeBS1wf" || element.id == userId);
     emit(
       TasksLoadedState(
         members: members,
