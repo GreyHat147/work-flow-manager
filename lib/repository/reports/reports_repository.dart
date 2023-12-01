@@ -84,7 +84,8 @@ class ReportsRepository extends Cubit<ReportsState> {
     }
   }
 
-  Future<void> getHoursByMemberOfProject(String projectId) async {
+  Future<void> getHoursByMemberOfProject(String projectId,
+      [DateTime? start, DateTime? end]) async {
     final DocumentSnapshot projectSnapshot = await getProject(projectId);
 
     if (projectSnapshot.exists) {

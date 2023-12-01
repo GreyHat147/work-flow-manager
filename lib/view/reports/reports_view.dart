@@ -3,10 +3,13 @@ import 'dart:math';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:work_flow_manager/app_theme.dart';
 import 'package:work_flow_manager/injections.dart';
 import 'package:work_flow_manager/models/project_model.dart';
 import 'package:work_flow_manager/repository/reports/reports_repository.dart';
+import 'package:work_flow_manager/view/widgets/custom_text_field.dart';
 
 class ReportType {
   const ReportType(this.name, this.value);
@@ -23,6 +26,8 @@ class ReportsView extends StatefulWidget {
 }
 
 class _ReportsViewState extends State<ReportsView> {
+  final TextEditingController startDateController = TextEditingController();
+  final TextEditingController endDateController = TextEditingController();
   ProjectModel? projectSelected;
 
   List<ReportType> reportTypes = [
@@ -56,6 +61,42 @@ class _ReportsViewState extends State<ReportsView> {
 
   Color getRandomColor() {
     return Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+  }
+
+  void pickDate(TextEditingController field) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate:
+          projectSelected != null ? projectSelected!.startDate : DateTime.now(),
+      firstDate:
+          projectSelected != null ? projectSelected!.startDate : DateTime.now(),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppTheme.appColor,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppTheme.appColor,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+
+      setState(() {
+        field.text = formattedDate; //set output date to TextField value.
+      });
+    }
   }
 
   Widget _drawMembersByProject(List<Map<String, dynamic>> data) {
@@ -186,6 +227,23 @@ class _ReportsViewState extends State<ReportsView> {
                       });
                     },
                     //selectedItem: state.members.first.name,
+                  ),
+                  const SizedBox(height: 30),
+                  CustomTextField(
+                    enabled: projectSelected != null,
+                    labelText: 'Fecha de inicio',
+                    controller: startDateController,
+                    keyboardType: TextInputType.text,
+                    prefixIcon: const Icon(Icons.calendar_month),
+                    onTap: () => pickDate(startDateController),
+                  ),
+                  const SizedBox(height: 30),
+                  CustomTextField(
+                    labelText: 'Fecha de fin',
+                    controller: endDateController,
+                    keyboardType: TextInputType.text,
+                    prefixIcon: const Icon(Icons.calendar_month),
+                    onTap: () => pickDate(endDateController),
                   ),
                   const SizedBox(height: 30),
                   DropdownSearch<String>(
