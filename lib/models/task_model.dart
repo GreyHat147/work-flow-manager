@@ -7,10 +7,10 @@ class TaskModel extends Equatable {
   final DateTime startDate;
   final DateTime endDate;
   final DateTime createdAt;
-  final String assignedMember;
+  String assignedMember;
   final String projectId;
 
-  const TaskModel({
+  TaskModel({
     this.id,
     required this.name,
     required this.description,

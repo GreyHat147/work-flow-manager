@@ -183,7 +183,8 @@ class _DetailProjectViewState extends State<DetailProjectView>
                                             const EdgeInsets.symmetric(
                                                 vertical: 2),
                                         title: Text(e.name),
-                                        subtitle: Text(e.assignedMember),
+                                        subtitle: Text(
+                                            "Asignado a: ${e.assignedMember}"),
                                         trailing: IconButton(
                                           onPressed: () {
                                             context
@@ -284,7 +285,8 @@ class _DetailProjectViewState extends State<DetailProjectView>
   @override
   Widget build(BuildContext _) {
     return BlocProvider(
-      create: (context) => getIt<ProjectsRepository>()..getProject(widget.id),
+      create: (context) =>
+          getIt<ProjectsRepository>()..getDetailProject(widget.id),
       child: BlocConsumer<ProjectsRepository, ProjectsState>(
         listener: (context, state) {
           if (state is ProjectDeletedState) {

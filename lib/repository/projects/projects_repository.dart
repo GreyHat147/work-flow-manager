@@ -57,6 +57,28 @@ class ProjectsRepository extends Cubit<ProjectsState> {
     });
   }
 
+  void getDetailProject(String id) async {
+    final DocumentSnapshot documentSnapshot =
+        await _firestore.collection('projects').doc(id).get();
+
+    if (documentSnapshot.data() == null) return;
+
+    final projectSelected = ProjectModel.fromJson(documentSnapshot.data()!);
+    for (final task in projectSelected.tasks) {
+      final DocumentSnapshot documentSnapshotMember =
+          await _firestore.collection('members').doc(task.assignedMember).get();
+      if (documentSnapshotMember.data() == null) continue;
+
+      final member = MemberModel.fromJson(
+          documentSnapshotMember.data()! as Map<String, dynamic>);
+      task.assignedMember = member.name;
+    }
+
+    print(projectSelected.toJson());
+
+    emit(ProjectDetailsState(projectSelected: projectSelected));
+  }
+
   void getProject(String id) async {
     final DocumentSnapshot documentSnapshot =
         await _firestore.collection('projects').doc(id).get();
