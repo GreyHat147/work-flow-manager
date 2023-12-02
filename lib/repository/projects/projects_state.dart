@@ -16,11 +16,15 @@ class ProjectsLoadingState extends ProjectsState {
 
 class ProjectDetailsState extends ProjectsState {
   final ProjectModel projectSelected;
+  final double allWorkedHours;
 
-  ProjectDetailsState({required this.projectSelected});
+  ProjectDetailsState({
+    required this.projectSelected,
+    required this.allWorkedHours,
+  });
 
   @override
-  List<Object?> get props => [projectSelected];
+  List<Object?> get props => [projectSelected, allWorkedHours];
 }
 
 class ProjectDeletedState extends ProjectsState {

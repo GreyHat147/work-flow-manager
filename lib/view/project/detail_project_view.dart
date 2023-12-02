@@ -52,7 +52,11 @@ class _DetailProjectViewState extends State<DetailProjectView>
     super.dispose();
   }
 
-  Widget _body(ProjectModel project, BuildContext context) {
+  Widget _body(
+    ProjectModel project,
+    BuildContext context,
+    ProjectDetailsState state,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(30),
       child: SingleChildScrollView(
@@ -136,7 +140,11 @@ class _DetailProjectViewState extends State<DetailProjectView>
                                 .toList(),
                           )
                         : const Center(child: Text("No hay miembros")),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
+                    ListTile(
+                      title: const Text("Total de Horas"),
+                      trailing: Text(state.allWorkedHours.toString()),
+                    ),
                     CustomButton(
                       child: const Text("Agregar Miembro"),
                       onPressed: () async {
@@ -308,7 +316,11 @@ class _DetailProjectViewState extends State<DetailProjectView>
               child: CircularProgressIndicator(),
             );
           } else if (state is ProjectDetailsState) {
-            body = _body(state.projectSelected, context);
+            body = _body(
+              state.projectSelected,
+              context,
+              state,
+            );
           }
 
           return Scaffold(
