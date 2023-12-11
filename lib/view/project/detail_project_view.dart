@@ -158,7 +158,7 @@ class _DetailProjectViewState extends State<DetailProjectView>
                         ).then(
                           (value) => context
                               .read<ProjectsRepository>()
-                              .getProject(project.id!),
+                              .getDetailProject(project.id!),
                         );
                       },
                     ),
@@ -193,18 +193,26 @@ class _DetailProjectViewState extends State<DetailProjectView>
                                         title: Text(e.name),
                                         subtitle: Text(
                                             "Asignado a: ${e.assignedMember}"),
-                                        trailing: IconButton(
-                                          onPressed: () {
-                                            context
-                                                .read<ProjectsRepository>()
-                                                .removeTaskByProject(
-                                                  e.id!,
-                                                  project,
-                                                );
-                                          },
-                                          icon: const Icon(Icons.close),
+                                        trailing: Column(
+                                          children: [
+                                            Text("Hrs ${e.workedHours}"),
+                                            Expanded(
+                                              child: IconButton(
+                                                onPressed: () {
+                                                  context
+                                                      .read<
+                                                          ProjectsRepository>()
+                                                      .removeTaskByProject(
+                                                        e.id!,
+                                                        project,
+                                                      );
+                                                },
+                                                icon: const Icon(Icons.close),
+                                              ),
+                                            )
+                                          ],
                                         ),
-                                        leading: const Icon(Icons.task),
+                                        //leading: const Icon(Icons.task),
                                       ),
                                       const Divider(height: 2),
                                     ],
@@ -224,7 +232,7 @@ class _DetailProjectViewState extends State<DetailProjectView>
                           }),
                         ).then((_) => context
                             .read<ProjectsRepository>()
-                            .getProject(project.id!));
+                            .getDetailProject(project.id!));
                       },
                     ),
                   ],

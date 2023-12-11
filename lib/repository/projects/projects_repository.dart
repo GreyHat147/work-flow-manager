@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work_flow_manager/models/member_model.dart';
 import 'package:work_flow_manager/models/project_model.dart';
+import 'package:work_flow_manager/models/record_model.dart';
 import 'package:work_flow_manager/repository/projects/projects_state.dart';
 
 class ProjectsRepository extends Cubit<ProjectsState> {
@@ -57,6 +58,24 @@ class ProjectsRepository extends Cubit<ProjectsState> {
     });
   }
 
+  Future<double> getAllHoursOfRecords(String taskId) async {
+    final snapshot = await _firestore
+        .collection('records')
+        .where('taskId', isEqualTo: taskId)
+        .get();
+
+    double allHours = 0;
+
+    if (snapshot.docs.isNotEmpty) {
+      for (final record in snapshot.docs) {
+        final recordModel = RecordModel.fromJson(record.data());
+        allHours += recordModel.workedHours;
+      }
+    }
+
+    return allHours;
+  }
+
   void getDetailProject(String id) async {
     final DocumentSnapshot documentSnapshot =
         await _firestore.collection('projects').doc(id).get();
@@ -68,6 +87,10 @@ class ProjectsRepository extends Cubit<ProjectsState> {
       final DocumentSnapshot documentSnapshotMember =
           await _firestore.collection('members').doc(task.assignedMember).get();
       if (documentSnapshotMember.data() == null) continue;
+
+      final double allHours = await getAllHoursOfRecords(task.id!);
+
+      task.workedHours = allHours;
 
       final member = MemberModel.fromJson(
           documentSnapshotMember.data()! as Map<String, dynamic>);
