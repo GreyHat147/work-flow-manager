@@ -125,37 +125,48 @@ class ReportsRepository extends Cubit<ReportsState> {
     emit((state as ReportsLoaded).copyWith(membersByProject: membersByProject));
   }
 
-  Future<void> getTasksByMember(String projectId) async {
+  Future<void> getTasksByMember(
+    String projectId,
+    DateTime start,
+    DateTime end,
+  ) async {
     final DocumentSnapshot projectSnapshot = await getProject(projectId);
 
     if (projectSnapshot.exists) {
       final ProjectModel project =
           ProjectModel.fromJson(projectSnapshot.data()!);
       List<Map<String, dynamic>> tasksByMemberOfProject = [];
+      print(start);
 
+      print(end);
       for (var task in project.tasks) {
-        final DocumentSnapshot snapshot = await getMember(task.assignedMember);
+        print(task.startDate);
+        print(task.startDate.isAfter(start));
+        if (task.startDate.isBetween(start, end)) {
+          final DocumentSnapshot snapshot =
+              await getMember(task.assignedMember);
 
-        if (snapshot.exists) {
-          final MemberModel member =
-              MemberModel.fromJson(snapshot.data()! as Map<String, dynamic>);
-          if (member.memberType == 'Gerente') return;
-          final memberExists = tasksByMemberOfProject
-              .where((element) => element['id'] == member.id);
+          if (snapshot.exists) {
+            final MemberModel member =
+                MemberModel.fromJson(snapshot.data()! as Map<String, dynamic>);
+            if (member.memberType == 'Gerente') return;
+            final memberExists = tasksByMemberOfProject
+                .where((element) => element['id'] == member.id);
 
-          if (memberExists.isEmpty) {
-            tasksByMemberOfProject.add({
-              'id': member.id,
-              'name': member.name,
-              'tasks': 1,
-            });
-          } else {
-            tasksByMemberOfProject = tasksByMemberOfProject.map((e) {
-              if (e['id'] == member.id) {
-                e['tasks'] = e['tasks']++;
-              }
-              return e;
-            }).toList();
+            if (memberExists.isEmpty) {
+              tasksByMemberOfProject.add({
+                'id': member.id,
+                'name': member.name,
+                'tasks': 1,
+              });
+            } else {
+              tasksByMemberOfProject = tasksByMemberOfProject.map((e) {
+                if (e['id'] == member.id) {
+                  e['tasks'] = e['tasks']++;
+                }
+                return e;
+              }).toList();
+            }
           }
         }
       }
@@ -176,5 +187,38 @@ class ReportsRepository extends Cubit<ReportsState> {
         await _firestore.collection('members').doc(memberId).get();
 
     return memberSnapshot;
+  }
+}
+
+extension DateTimeExtension on DateTime? {
+  bool? isAfterOrEqualTo(DateTime dateTime) {
+    final date = this;
+    if (date != null) {
+      final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
+      return isAtSameMomentAs | date.isAfter(dateTime);
+    }
+    return null;
+  }
+
+  bool? isBeforeOrEqualTo(DateTime dateTime) {
+    final date = this;
+    if (date != null) {
+      final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
+      return isAtSameMomentAs | date.isBefore(dateTime);
+    }
+    return null;
+  }
+
+  bool isBetween(
+    DateTime fromDateTime,
+    DateTime toDateTime,
+  ) {
+    final date = this;
+    if (date != null) {
+      final isAfter = date.isAfterOrEqualTo(fromDateTime) ?? false;
+      final isBefore = date.isBeforeOrEqualTo(toDateTime) ?? false;
+      return isAfter && isBefore;
+    }
+    return false;
   }
 }

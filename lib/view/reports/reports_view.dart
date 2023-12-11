@@ -157,7 +157,7 @@ class _ReportsViewState extends State<ReportsView> {
     );
   }
 
-  void _getReport(BuildContext context) {
+  void _getReport(BuildContext context, ReportsLoaded state) {
     if (projectSelected == null || reportTypeSelected == null) return;
 
     switch (reportTypeSelected!.value) {
@@ -168,9 +168,11 @@ class _ReportsViewState extends State<ReportsView> {
         break;
 
       case 'tasksByMember':
-        context
-            .read<ReportsRepository>()
-            .getTasksByMember(projectSelected!.id!);
+        context.read<ReportsRepository>().getTasksByMember(
+              projectSelected!.id!,
+              DateTime.parse(startDateController.text),
+              DateTime.parse(endDateController.text),
+            );
         break;
 
       case 'membersByProject':
@@ -224,6 +226,8 @@ class _ReportsViewState extends State<ReportsView> {
                         projectSelected = state.projects.firstWhere(
                           (element) => element.name == newValue,
                         );
+                        startDateController.text = DateFormat('yyyy-MM-dd')
+                            .format(projectSelected!.startDate);
                       });
                     },
                     //selectedItem: state.members.first.name,
@@ -272,7 +276,7 @@ class _ReportsViewState extends State<ReportsView> {
                           (element) => element.name == newValue,
                         );
                       });
-                      _getReport(context);
+                      _getReport(context, state);
                     },
                   ),
                   const SizedBox(height: 50),

@@ -37,7 +37,10 @@ class TasksRepository extends Cubit<TasksState> {
       });
     }
 
-    await _firestore.collection('tasks').add(taskModel.toJson());
+    await _firestore
+        .collection('tasks')
+        .doc(taskModel.id)
+        .set(taskModel.toJson());
 
     emit(TasksLoadedState(wasTaskCreated: true));
   }

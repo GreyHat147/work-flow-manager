@@ -43,11 +43,25 @@ class _CreateTaskViewState extends State<CreateTaskView> {
 
   void _createTask(BuildContext context) {
     if (_formKey.currentState!.validate() && selectedMember != null) {
+      final now = DateTime.now();
+      final startDateParsed = DateTime.parse(startDateController.text);
+      final endDateParsed = DateTime.parse(endDateController.text);
+
       TaskModel task = TaskModel(
         name: nameController.text,
         description: descriptionController.text,
-        startDate: DateTime.parse(startDateController.text),
-        endDate: DateTime.parse(endDateController.text),
+        startDate: DateTime(
+          startDateParsed.year,
+          startDateParsed.month,
+          startDateParsed.day,
+          0,
+        ),
+        endDate: DateTime(
+          endDateParsed.year,
+          endDateParsed.month,
+          endDateParsed.day,
+          23,
+        ),
         createdAt: DateTime.now(),
         assignedMember: selectedMember!.id!,
         projectId: widget.projectId!,

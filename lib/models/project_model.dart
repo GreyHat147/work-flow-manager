@@ -67,5 +67,6 @@ class ProjectModel extends Equatable {
         projectType,
         createdAt,
         tasks,
+        totalHours ?? 0,
       ];
 }

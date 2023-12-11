@@ -203,7 +203,7 @@ class _DetailProjectViewState extends State<DetailProjectView>
                                                       .read<
                                                           ProjectsRepository>()
                                                       .removeTaskByProject(
-                                                        e.id!,
+                                                        e,
                                                         project,
                                                       );
                                                 },

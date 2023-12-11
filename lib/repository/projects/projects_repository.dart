@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:work_flow_manager/models/member_model.dart';
 import 'package:work_flow_manager/models/project_model.dart';
 import 'package:work_flow_manager/models/record_model.dart';
+import 'package:work_flow_manager/models/task_model.dart';
 import 'package:work_flow_manager/repository/projects/projects_state.dart';
 
 class ProjectsRepository extends Cubit<ProjectsState> {
@@ -117,6 +118,8 @@ class ProjectsRepository extends Cubit<ProjectsState> {
       allWorkedHours += member.workedHours;
     }
 
+    print(projectSelected.toJson());
+
     emit(ProjectDetailsState(
       projectSelected: projectSelected,
       allWorkedHours: allWorkedHours,
@@ -191,15 +194,27 @@ class ProjectsRepository extends Cubit<ProjectsState> {
     getProject(project.id!);
   }
 
-  void removeTaskByProject(String taskId, ProjectModel project) async {
-    project.tasks.removeWhere((element) => element.id == taskId);
+  void removeTaskByProject(TaskModel task, ProjectModel project) async {
+    //print(task.toJson());
+
+    final snapshot = await _firestore.collection('tasks').doc(task.id).get();
+    final taskFirebase = TaskModel.fromJson(snapshot.data()!);
+
+    double allHours = task.workedHours;
+    for (final member in project.members) {
+      if (member.id == taskFirebase.assignedMember) {
+        member.workedHours -= allHours;
+      }
+    }
+
+    project.tasks.removeWhere((element) => element.id == task.id);
 
     await _firestore
         .collection('projects')
         .doc(project.id!)
         .update(project.toJson());
 
-    await _firestore.collection('tasks').doc(taskId).delete();
+    await _firestore.collection('tasks').doc(task.id).delete();
 
     getProject(project.id!);
   }
