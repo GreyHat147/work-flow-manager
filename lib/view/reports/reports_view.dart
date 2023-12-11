@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:work_flow_manager/app_theme.dart';
 import 'package:work_flow_manager/injections.dart';
+import 'package:work_flow_manager/models/member_model.dart';
 import 'package:work_flow_manager/models/project_model.dart';
+import 'package:work_flow_manager/models/task_model.dart';
 import 'package:work_flow_manager/repository/reports/reports_repository.dart';
 import 'package:work_flow_manager/view/widgets/widgets.dart';
 
@@ -29,11 +31,15 @@ class _ReportsViewState extends State<ReportsView> {
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
   ProjectModel? projectSelected;
+  MemberModel? memberSelected;
+  TaskModel? taskSelected;
 
   List<ReportType> reportTypes = [
     const ReportType('Miembros', 'membersByProject'),
-    const ReportType('Horas por miembro', 'hoursByMember'),
-    const ReportType('Tareas por miembro', 'tasksByMember'),
+    const ReportType('Horas por miembros', 'hoursByMember'),
+    const ReportType('Tareas por miembros', 'tasksByMember'),
+    const ReportType('Hora por miembro en especifico', 'specificMember'),
+    const ReportType('Tarea en especifico', 'specificTask'),
   ];
 
   ReportType? reportTypeSelected;
@@ -47,11 +53,14 @@ class _ReportsViewState extends State<ReportsView> {
 
     switch (reportTypeSelected!.value) {
       case 'hoursByMember':
+      case 'specificMember':
         return _drawHoursMemberByProject(state.hoursByMemberOfProject);
       case 'tasksByMember':
         return _drawTasksMemberByProject(state.tasksByMemberOfProject);
       case 'membersByProject':
         return _drawMembersByProject(state.membersByProject);
+      case 'specificTask':
+        return _drawSpecificTaskByProject(state.specificTask);
       default:
         return const Center(
           child: Text('No se ha seleccionado un tipo de reporte'),
@@ -141,6 +150,44 @@ class _ReportsViewState extends State<ReportsView> {
     );
   }
 
+  Widget _drawSpecificTaskByProject(TaskModel? task) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text("Detalles de la tarea",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ),
+        ListTile(
+          title: Text(task!.name),
+          subtitle: const Text("Nombre de la tarea"),
+          leading: const Icon(Icons.text_fields_outlined),
+        ),
+        ListTile(
+          title: Text(task.description),
+          subtitle: const Text("Descripción de la tarea"),
+          leading: const Icon(Icons.description_outlined),
+        ),
+        ListTile(
+          title: Text(DateFormat('yyyy-MM-dd').format(task.startDate)),
+          subtitle: const Text("Fecha de Inicio"),
+          leading: const Icon(Icons.calendar_today_outlined),
+        ),
+        ListTile(
+          title: Text(DateFormat('yyyy-MM-dd').format(task.endDate)),
+          subtitle: const Text("Fecha de Finalización"),
+          leading: const Icon(Icons.calendar_month_outlined),
+        ),
+        ListTile(
+          title: Text(task.assignedMemberName!),
+          subtitle: const Text("Miembro asignado"),
+          leading: const Icon(Icons.person_pin),
+        ),
+      ],
+    );
+  }
+
   Widget _drawTasksMemberByProject(List<Map<String, dynamic>> data) {
     return SfCartesianChart(
       primaryXAxis: CategoryAxis(),
@@ -150,8 +197,10 @@ class _ReportsViewState extends State<ReportsView> {
           dataSource: data,
           xValueMapper: (Map<String, dynamic> data, _) => data['name'],
           yValueMapper: (Map<String, dynamic> data, _) => data['tasks'],
-          name: 'Gold',
           color: Colors.cyan,
+          dataLabelSettings: const DataLabelSettings(isVisible: true),
+          dataLabelMapper: (Map<String, dynamic> data, index) =>
+              data['workedHours'],
         ),
       ],
     );
@@ -165,6 +214,16 @@ class _ReportsViewState extends State<ReportsView> {
         context
             .read<ReportsRepository>()
             .getHoursByMemberOfProject(projectSelected!.id!);
+        break;
+
+      case 'specificMember':
+        context
+            .read<ReportsRepository>()
+            .getHoursByMemberOfProject(projectSelected!.id!, memberSelected);
+        break;
+
+      case 'specificTask':
+        context.read<ReportsRepository>().getSpecificTask(taskSelected!);
         break;
 
       case 'tasksByMember':
@@ -266,6 +325,72 @@ class _ReportsViewState extends State<ReportsView> {
                   },
                 ),
                 const SizedBox(height: 30),
+                projectSelected != null &&
+                        reportTypeSelected?.value == 'specificMember'
+                    ? DropdownSearch<String>(
+                        items: projectSelected!.members
+                            .map((e) => e.name)
+                            .toList(),
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.list),
+                            labelText: "Seleccione un miembro",
+                            labelStyle: TextStyle(
+                                fontFamily: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .fontFamily,
+                                fontSize: 15),
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                          ),
+                        ),
+                        onChanged: (String? newValue) {
+                          if (newValue == null) return;
+                          setState(() {
+                            memberSelected = projectSelected!.members
+                                .firstWhere(
+                                    (element) => element.name == newValue);
+                          });
+                          _getReport(context, state);
+                        },
+                      )
+                    : const SizedBox(),
+                projectSelected != null &&
+                        reportTypeSelected?.value == 'specificTask'
+                    ? DropdownSearch<String>(
+                        items:
+                            projectSelected!.tasks.map((e) => e.name).toList(),
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.list),
+                            labelText: "Seleccione una tarea",
+                            labelStyle: TextStyle(
+                                fontFamily: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .fontFamily,
+                                fontSize: 15),
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                            ),
+                          ),
+                        ),
+                        onChanged: (String? newValue) {
+                          if (newValue == null) return;
+                          setState(() {
+                            taskSelected = projectSelected!.tasks.firstWhere(
+                                (element) => element.name == newValue);
+                          });
+                          _getReport(context, state);
+                        },
+                      )
+                    : const SizedBox(),
                 Visibility(
                   visible: reportTypeSelected?.value == 'tasksByMember',
                   child: Column(

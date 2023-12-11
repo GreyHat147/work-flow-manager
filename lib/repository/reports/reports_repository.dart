@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_flow_manager/models/member_model.dart';
 import 'package:work_flow_manager/models/project_model.dart';
+import 'package:work_flow_manager/models/task_model.dart';
 
 abstract class ReportsState extends Equatable {}
 
@@ -23,6 +24,7 @@ class ReportsLoaded extends ReportsState {
     this.hoursByMemberOfProject = const [],
     this.tasksByMemberOfProject = const [],
     this.membersByProject = const [],
+    this.specificTask,
   });
 
   final List<ProjectModel> projects;
@@ -30,6 +32,7 @@ class ReportsLoaded extends ReportsState {
   final List<Map<String, dynamic>> hoursByMemberOfProject;
   final List<Map<String, dynamic>> tasksByMemberOfProject;
   final List<Map<String, dynamic>> membersByProject;
+  final TaskModel? specificTask;
 
   @override
   List<Object?> get props => [
@@ -38,6 +41,7 @@ class ReportsLoaded extends ReportsState {
         hoursByMemberOfProject,
         tasksByMemberOfProject,
         membersByProject,
+        specificTask,
       ];
 
   ReportsLoaded copyWith({
@@ -46,6 +50,7 @@ class ReportsLoaded extends ReportsState {
     List<Map<String, dynamic>>? hoursByMemberOfProject,
     List<Map<String, dynamic>>? tasksByMemberOfProject,
     List<Map<String, dynamic>>? membersByProject,
+    TaskModel? specificTask,
   }) {
     return ReportsLoaded(
       projects: projects ?? this.projects,
@@ -55,6 +60,7 @@ class ReportsLoaded extends ReportsState {
       tasksByMemberOfProject:
           tasksByMemberOfProject ?? this.tasksByMemberOfProject,
       membersByProject: membersByProject ?? this.membersByProject,
+      specificTask: specificTask ?? this.specificTask,
     );
   }
 }
@@ -84,8 +90,12 @@ class ReportsRepository extends Cubit<ReportsState> {
     }
   }
 
+  void getSpecificTask(TaskModel task) {
+    emit((state as ReportsLoaded).copyWith(specificTask: task));
+  }
+
   Future<void> getHoursByMemberOfProject(String projectId,
-      [DateTime? start, DateTime? end]) async {
+      [MemberModel? memberModel]) async {
     final DocumentSnapshot projectSnapshot = await getProject(projectId);
 
     if (projectSnapshot.exists) {
@@ -97,11 +107,18 @@ class ReportsRepository extends Cubit<ReportsState> {
           .where((element) => element.memberType == 'Empleado')
           .toList();
 
-      for (var member in employees) {
+      if (memberModel != null) {
         hoursByMemberOfProject.add({
-          'name': member.name,
-          'hours': member.workedHours,
+          'name': memberModel.name,
+          'hours': memberModel.workedHours,
         });
+      } else {
+        for (var member in employees) {
+          hoursByMemberOfProject.add({
+            'name': member.name,
+            'hours': member.workedHours,
+          });
+        }
       }
 
       emit((state as ReportsLoaded)
