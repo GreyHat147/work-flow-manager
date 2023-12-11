@@ -9,7 +9,7 @@ import 'package:work_flow_manager/app_theme.dart';
 import 'package:work_flow_manager/injections.dart';
 import 'package:work_flow_manager/models/project_model.dart';
 import 'package:work_flow_manager/repository/reports/reports_repository.dart';
-import 'package:work_flow_manager/view/widgets/custom_text_field.dart';
+import 'package:work_flow_manager/view/widgets/widgets.dart';
 
 class ReportType {
   const ReportType(this.name, this.value);
@@ -198,91 +198,110 @@ class _ReportsViewState extends State<ReportsView> {
               child: CircularProgressIndicator(),
             );
           } else if (state is ReportsLoaded) {
-            return Padding(
+            return ListView(
               padding: const EdgeInsets.all(30.0),
-              child: Column(
-                children: [
-                  DropdownSearch<String>(
-                    items: state.projects.map((e) => e.name).toList(),
-                    dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.list),
-                        labelText: "Seleccione un proyecto",
-                        labelStyle: TextStyle(
-                            fontFamily: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .fontFamily,
-                            fontSize: 15),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
+              children: [
+                DropdownSearch<String>(
+                  items: state.projects.map((e) => e.name).toList(),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.list),
+                      labelText: "Seleccione un proyecto",
+                      labelStyle: TextStyle(
+                          fontFamily: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .fontFamily,
+                          fontSize: 15),
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       ),
                     ),
-                    onChanged: (String? newValue) {
-                      if (newValue == null) return;
-                      setState(() {
-                        projectSelected = state.projects.firstWhere(
-                          (element) => element.name == newValue,
-                        );
-                        startDateController.text = DateFormat('yyyy-MM-dd')
-                            .format(projectSelected!.startDate);
-                      });
-                    },
-                    //selectedItem: state.members.first.name,
                   ),
-                  const SizedBox(height: 30),
-                  CustomTextField(
-                    enabled: projectSelected != null,
-                    labelText: 'Fecha de inicio',
-                    controller: startDateController,
-                    keyboardType: TextInputType.text,
-                    prefixIcon: const Icon(Icons.calendar_month),
-                    onTap: () => pickDate(startDateController),
-                  ),
-                  const SizedBox(height: 30),
-                  CustomTextField(
-                    labelText: 'Fecha de fin',
-                    controller: endDateController,
-                    keyboardType: TextInputType.text,
-                    prefixIcon: const Icon(Icons.calendar_month),
-                    onTap: () => pickDate(endDateController),
-                  ),
-                  const SizedBox(height: 30),
-                  DropdownSearch<String>(
-                    enabled: projectSelected != null,
-                    items: reportTypes.map((e) => e.name).toList(),
-                    dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.list),
-                        labelText: "Seleccione un tipo de reporte",
-                        labelStyle: TextStyle(
-                            fontFamily: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .fontFamily,
-                            fontSize: 15),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
+                  onChanged: (String? newValue) {
+                    if (newValue == null) return;
+                    setState(() {
+                      projectSelected = state.projects.firstWhere(
+                        (element) => element.name == newValue,
+                      );
+                      startDateController.text = DateFormat('yyyy-MM-dd')
+                          .format(projectSelected!.startDate);
+                    });
+                  },
+                  //selectedItem: state.members.first.name,
+                ),
+                const SizedBox(height: 30),
+                DropdownSearch<String>(
+                  enabled: projectSelected != null,
+                  items: reportTypes.map((e) => e.name).toList(),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.list),
+                      labelText: "Seleccione un tipo de reporte",
+                      labelStyle: TextStyle(
+                          fontFamily: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .fontFamily,
+                          fontSize: 15),
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       ),
                     ),
-                    onChanged: (String? newValue) {
-                      if (newValue == null) return;
-                      setState(() {
-                        reportTypeSelected = reportTypes.firstWhere(
-                          (element) => element.name == newValue,
-                        );
-                      });
+                  ),
+                  onChanged: (String? newValue) {
+                    if (newValue == null) return;
+                    setState(() {
+                      reportTypeSelected = reportTypes.firstWhere(
+                        (element) => element.name == newValue,
+                      );
+                    });
+
+                    if (reportTypeSelected?.value == 'membersByProject' ||
+                        reportTypeSelected?.value == 'hoursByMember') {
                       _getReport(context, state);
-                    },
+                    }
+                  },
+                ),
+                const SizedBox(height: 30),
+                Visibility(
+                  visible: reportTypeSelected?.value == 'tasksByMember',
+                  child: Column(
+                    children: [
+                      CustomTextField(
+                        enabled: projectSelected != null,
+                        labelText: 'Fecha de inicio',
+                        controller: startDateController,
+                        keyboardType: TextInputType.text,
+                        prefixIcon: const Icon(Icons.calendar_month),
+                        onTap: () => pickDate(startDateController),
+                      ),
+                      const SizedBox(height: 30),
+                      CustomTextField(
+                        labelText: 'Fecha de fin',
+                        controller: endDateController,
+                        keyboardType: TextInputType.text,
+                        prefixIcon: const Icon(Icons.calendar_month),
+                        onTap: () {
+                          pickDate(endDateController);
+                        },
+                      ),
+                      const SizedBox(height: 30),
+                      CustomButton(
+                        child: const Text('Generar Reporte'),
+                        onPressed: () {
+                          _getReport(context, state);
+                        },
+                      )
+                    ],
                   ),
-                  const SizedBox(height: 50),
-                  _drawChart(state),
-                ],
-              ),
+                ),
+                const SizedBox(height: 50),
+                _drawChart(state),
+                const SizedBox(height: 50),
+              ],
             );
           } else {
             return const Center(

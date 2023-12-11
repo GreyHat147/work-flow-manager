@@ -136,13 +136,9 @@ class ReportsRepository extends Cubit<ReportsState> {
       final ProjectModel project =
           ProjectModel.fromJson(projectSnapshot.data()!);
       List<Map<String, dynamic>> tasksByMemberOfProject = [];
-      print(start);
-
-      print(end);
       for (var task in project.tasks) {
-        print(task.startDate);
-        print(task.startDate.isAfter(start));
-        if (task.startDate.isBetween(start, end)) {
+        if (task.createdAt.isAfterOrEqual(start) &&
+            task.createdAt.isBeforeOrEqual(end)) {
           final DocumentSnapshot snapshot =
               await getMember(task.assignedMember);
 
@@ -170,6 +166,7 @@ class ReportsRepository extends Cubit<ReportsState> {
           }
         }
       }
+      print(tasksByMemberOfProject);
       emit((state as ReportsLoaded)
           .copyWith(tasksByMemberOfProject: tasksByMemberOfProject));
     }
@@ -190,35 +187,20 @@ class ReportsRepository extends Cubit<ReportsState> {
   }
 }
 
-extension DateTimeExtension on DateTime? {
-  bool? isAfterOrEqualTo(DateTime dateTime) {
-    final date = this;
-    if (date != null) {
-      final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
-      return isAtSameMomentAs | date.isAfter(dateTime);
-    }
-    return null;
+extension DateTimeExtension on DateTime {
+  bool isAfterOrEqual(DateTime other) {
+    return isAtSameMomentAs(other) || isAfter(other);
   }
 
-  bool? isBeforeOrEqualTo(DateTime dateTime) {
-    final date = this;
-    if (date != null) {
-      final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
-      return isAtSameMomentAs | date.isBefore(dateTime);
-    }
-    return null;
+  bool isBeforeOrEqual(DateTime other) {
+    return isAtSameMomentAs(other) || isBefore(other);
   }
 
-  bool isBetween(
-    DateTime fromDateTime,
-    DateTime toDateTime,
-  ) {
-    final date = this;
-    if (date != null) {
-      final isAfter = date.isAfterOrEqualTo(fromDateTime) ?? false;
-      final isBefore = date.isBeforeOrEqualTo(toDateTime) ?? false;
-      return isAfter && isBefore;
-    }
-    return false;
+  bool isBetween({required DateTime from, required DateTime to}) {
+    return isAfterOrEqual(from) && isBeforeOrEqual(to);
+  }
+
+  bool isBetweenExclusive({required DateTime from, required DateTime to}) {
+    return isAfter(from) && isBefore(to);
   }
 }

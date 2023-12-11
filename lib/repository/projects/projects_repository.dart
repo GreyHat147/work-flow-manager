@@ -95,7 +95,7 @@ class ProjectsRepository extends Cubit<ProjectsState> {
 
       final member = MemberModel.fromJson(
           documentSnapshotMember.data()! as Map<String, dynamic>);
-      task.assignedMember = member.name;
+      task.assignedMemberName = member.name;
     }
     double allWorkedHours = 0;
     for (final member in projectSelected.members) {

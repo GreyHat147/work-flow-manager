@@ -192,7 +192,7 @@ class _DetailProjectViewState extends State<DetailProjectView>
                                                 vertical: 2),
                                         title: Text(e.name),
                                         subtitle: Text(
-                                            "Asignado a: ${e.assignedMember}"),
+                                            "Asignado a: ${e.assignedMemberName}"),
                                         trailing: Column(
                                           children: [
                                             Text("Hrs ${e.workedHours}"),

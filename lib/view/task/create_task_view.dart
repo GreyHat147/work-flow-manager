@@ -67,6 +67,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
         projectId: widget.projectId!,
         id: getIt<FirebaseFirestore>().collection("tasks").doc().id,
         workedHours: 0,
+        assignedMemberName: selectedMember!.name,
       );
       context.read<TasksRepository>().addTask(task, widget.projectId!);
     }

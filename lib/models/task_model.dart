@@ -8,6 +8,7 @@ class TaskModel extends Equatable {
   final DateTime endDate;
   final DateTime createdAt;
   String assignedMember;
+  String? assignedMemberName;
   final String projectId;
   double workedHours;
 
@@ -21,6 +22,7 @@ class TaskModel extends Equatable {
     required this.createdAt,
     required this.projectId,
     this.workedHours = 0,
+    this.assignedMemberName,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -34,6 +36,7 @@ class TaskModel extends Equatable {
       assignedMember: json['assignedMember'],
       projectId: json['projectId'],
       workedHours: json['workedHours'],
+      assignedMemberName: json['assignedMemberName'],
     );
   }
 
@@ -48,6 +51,7 @@ class TaskModel extends Equatable {
       'assignedMember': assignedMember,
       'projectId': projectId,
       'workedHours': workedHours,
+      'assignedMemberName': assignedMemberName,
     };
   }
 
@@ -61,5 +65,6 @@ class TaskModel extends Equatable {
         createdAt,
         projectId,
         workedHours,
+        assignedMemberName ?? '',
       ];
 }
