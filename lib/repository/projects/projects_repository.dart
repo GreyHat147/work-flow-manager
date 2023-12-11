@@ -199,6 +199,8 @@ class ProjectsRepository extends Cubit<ProjectsState> {
         .doc(project.id!)
         .update(project.toJson());
 
+    await _firestore.collection('tasks').doc(taskId).delete();
+
     getProject(project.id!);
   }
 }

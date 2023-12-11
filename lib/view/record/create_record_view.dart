@@ -64,6 +64,9 @@ class _CreateRecordViewState extends State<CreateRecordView> {
     final TimeOfDay? time = await showTimePicker(
       context: context,
       initialTime: pickedTime ?? TimeOfDay.now(),
+      cancelText: 'Cancelar',
+      confirmText: 'Aceptar',
+      helpText: 'Selecciona una hora',
       initialEntryMode: TimePickerEntryMode.dialOnly,
       builder: (BuildContext context, Widget? child) {
         return Theme(
@@ -95,6 +98,15 @@ class _CreateRecordViewState extends State<CreateRecordView> {
 
   void _update(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
+      if (_endTimeSelected.hour < _startTimeSelected.hour) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('La hora de fin no puede ser menor a la de inicio'),
+          ),
+        );
+        return;
+      }
+
       final DateTime now = DateTime.now();
       final DateTime startTime = DateTime(
         now.year,
@@ -132,6 +144,15 @@ class _CreateRecordViewState extends State<CreateRecordView> {
 
   void _create(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
+      if (_endTimeSelected.hour < _startTimeSelected.hour) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('La hora de fin no puede ser menor a la de inicio'),
+          ),
+        );
+        return;
+      }
+
       String recordId =
           getIt<FirebaseFirestore>().collection("records").doc().id;
 
@@ -287,6 +308,7 @@ class _CreateRecordViewState extends State<CreateRecordView> {
                             startDateController.text =
                                 '${pickedTime.hour}:${pickedTime.minute}';
                             _startTimeSelected = pickedTime;
+                            _endTimeSelected = pickedTime;
                           }
                         },
                       ),
