@@ -60,7 +60,7 @@ class _ReportsViewState extends State<ReportsView> {
       case 'membersByProject':
         return _drawMembersByProject(state.membersByProject);
       case 'specificTask':
-        return _drawSpecificTaskByProject(state.specificTask);
+        return _drawSpecificTaskByProject();
       default:
         return const Center(
           child: Text('No se ha seleccionado un tipo de reporte'),
@@ -70,6 +70,13 @@ class _ReportsViewState extends State<ReportsView> {
 
   Color getRandomColor() {
     return Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+  }
+
+  void _clearData() {
+    setState(() {
+      memberSelected = null;
+      taskSelected = null;
+    });
   }
 
   void pickDate(TextEditingController field) async {
@@ -150,7 +157,9 @@ class _ReportsViewState extends State<ReportsView> {
     );
   }
 
-  Widget _drawSpecificTaskByProject(TaskModel? task) {
+  Widget _drawSpecificTaskByProject() {
+    if (taskSelected == null) return const SizedBox();
+    final TaskModel task = taskSelected!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -160,7 +169,7 @@ class _ReportsViewState extends State<ReportsView> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ),
         ListTile(
-          title: Text(task!.name),
+          title: Text(task.name),
           subtitle: const Text("Nombre de la tarea"),
           leading: const Icon(Icons.text_fields_outlined),
         ),
@@ -223,7 +232,7 @@ class _ReportsViewState extends State<ReportsView> {
         break;
 
       case 'specificTask':
-        context.read<ReportsRepository>().getSpecificTask(taskSelected!);
+        context.read<ReportsRepository>().getSpecificTask();
         break;
 
       case 'tasksByMember':
@@ -321,6 +330,10 @@ class _ReportsViewState extends State<ReportsView> {
                     if (reportTypeSelected?.value == 'membersByProject' ||
                         reportTypeSelected?.value == 'hoursByMember') {
                       _getReport(context, state);
+                    }
+
+                    if (reportTypeSelected?.value == 'specificTask') {
+                      taskSelected = null;
                     }
                   },
                 ),

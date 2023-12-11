@@ -24,7 +24,7 @@ class ReportsLoaded extends ReportsState {
     this.hoursByMemberOfProject = const [],
     this.tasksByMemberOfProject = const [],
     this.membersByProject = const [],
-    this.specificTask,
+    this.specificTask = false,
   });
 
   final List<ProjectModel> projects;
@@ -32,7 +32,7 @@ class ReportsLoaded extends ReportsState {
   final List<Map<String, dynamic>> hoursByMemberOfProject;
   final List<Map<String, dynamic>> tasksByMemberOfProject;
   final List<Map<String, dynamic>> membersByProject;
-  final TaskModel? specificTask;
+  final bool specificTask;
 
   @override
   List<Object?> get props => [
@@ -50,7 +50,7 @@ class ReportsLoaded extends ReportsState {
     List<Map<String, dynamic>>? hoursByMemberOfProject,
     List<Map<String, dynamic>>? tasksByMemberOfProject,
     List<Map<String, dynamic>>? membersByProject,
-    TaskModel? specificTask,
+    bool? specificTask,
   }) {
     return ReportsLoaded(
       projects: projects ?? this.projects,
@@ -90,8 +90,8 @@ class ReportsRepository extends Cubit<ReportsState> {
     }
   }
 
-  void getSpecificTask(TaskModel task) {
-    emit((state as ReportsLoaded).copyWith(specificTask: task));
+  void getSpecificTask() {
+    emit((state as ReportsLoaded).copyWith(specificTask: true));
   }
 
   Future<void> getHoursByMemberOfProject(String projectId,
@@ -183,7 +183,6 @@ class ReportsRepository extends Cubit<ReportsState> {
           }
         }
       }
-      print(tasksByMemberOfProject);
       emit((state as ReportsLoaded)
           .copyWith(tasksByMemberOfProject: tasksByMemberOfProject));
     }
